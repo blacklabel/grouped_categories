@@ -19,6 +19,26 @@ var UNDEFINED = void 0,
     _tickRender        = tickProto.render;
 
 
+function Category(obj, parent) {
+  this.name = obj.name || obj;
+  this.parent = parent;
+
+  return this;
+}
+
+Category.prototype.toString = function () {
+  var parts = [],
+      cat = this;
+
+  while (cat) {
+    parts.push(cat.name);
+    cat = cat.parent;
+  }
+
+  return parts.join(', ');
+};
+
+
 // Highcharts methods
 function defined(obj) {
   return obj !== UNDEFINED && obj !== null;
@@ -40,58 +60,41 @@ function sum(arr) {
   return x;
 }
 
+
 // Builds reverse category tree
-function buildTree(arr, out, parent, depth) {
-  var len = arr.length,
-      children,
-      leaves,
-      stat,
-      tmp,
-      el,
-      n, i;
+function buildTree(cats, out, options, parent, depth) {
+  var len = cats.length,
+      cat;
 
-  // initialize variables
-  leaves = n = 0;
+  depth || (depth = 0);
+  options.depth || (options.depth = 0);
 
-  if (!depth)
-    depth = 0;
+  while (len--) {
+    cat = cats[len];
 
-  for (i = 0; i < len; i++) {
-    el  = arr[i];
-    children = el.categories;
 
-    // reset el properties
-    el.leaves = 0;
-    parent && (el.parent = parent);
+    if (parent)
+      cat.parent = parent;
 
-    // walk recursive, calculate tree depth & no. of leaves
-    if (children) {
-      // stat array of 2 values: [depth, leaves]
-      stat = buildTree(children, out, el, depth + 1);
 
-      leaves += children.length;
-      el.leaves = stat[1];
-    }
+    if (cat.categories)
+      buildTree(cat.categories, out, options, cat, depth + 1);
 
-    // text leaf
-    else {
-      tmp = { name: el, parent: parent };
-      leaves++;
-
-      // allow leaves passed as an object
-      if (typeof el === 'object')
-        tmp.name = el.name;
-
-      out.push(tmp);
-    }
-
-    // always get greater depth
-    if (stat && n < stat[0])
-      n = stat[0];
+    else
+      addLeaf(out, cat, parent);
   }
 
-  // returns [depth, leaves]
-  return [n ? n : depth, leaves];
+  options.depth = mathMax(options.depth, depth);
+}
+
+// Adds category leaf to array
+function addLeaf(out, cat, parent) {
+  out.unshift(new Category(cat, parent));
+
+  while (parent) {
+    parent.leaves++ || (parent.leaves = 1);
+    parent = parent.parent;
+  }
 }
 
 // Pushes part of grid to path
@@ -157,16 +160,17 @@ axisProto.init = function (chart, options) {
 // setup required axis options
 axisProto.setupGroups = function (options) {
   var categories  = HC.extend([], options.categories),
-      reverseTree = [];
+      reverseTree = [],
+      stats       = {};
 
   // build categories tree
-  stat = buildTree(categories, reverseTree);
+  buildTree(categories, reverseTree, stats);
 
   // set axis properties
   this.categoriesTree   = categories;
   this.categories       = reverseTree;
-  this.isGrouped        = stat[0] !== 0;
-  this.labelsDepth      = stat[0];
+  this.isGrouped        = stats.depth !== 0;
+  this.labelsDepth      = stats.depth;
   this.labelsSizes      = [];
   this.labelsGridPath   = [];
   this.tickLength       = options.tickLength || this.tickLength || null;
