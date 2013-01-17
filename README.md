@@ -1,5 +1,8 @@
 # Grouped Categories Highcharts module
 
+![Grouped Categories](https://f.cloud.github.com/assets/381865/75319/77f67946-60bf-11e2-8e0a-b8291a3024e9.png)
+
+
 ### Requirements
 
 * Plugin requires the latest Highcharts (tested with 2.3.5)
@@ -24,3 +27,5 @@ categories: [{
     categories: ["Cod", "Salmon", "Tuna"]
 }]
 ```
+
+Don't forget to check out the [jsfiddle demo](http://jsfiddle.net/shD6K/).
