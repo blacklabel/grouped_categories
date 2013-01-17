@@ -48,7 +48,7 @@ function buildTree(arr, out, parent, depth) {
       stat,
       tmp,
       el,
-      n;
+      n, i;
 
   // initialize variables
   leaves = n = 0;
@@ -56,8 +56,8 @@ function buildTree(arr, out, parent, depth) {
   if (!depth)
     depth = 0;
 
-  while (len--) {
-    el  = arr[len];
+  for (i = 0; i < len; i++) {
+    el  = arr[i];
     children = el.categories;
 
     // reset el properties
