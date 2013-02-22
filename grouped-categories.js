@@ -1,3 +1,10 @@
+/**
+ * Grouped Categories v0.0.1 (2013-02-22)
+ *
+ * (c) 2012-2013 Black Label
+ *
+ * License: Creative Commons Attribution (CC)
+ */
 (function(HC){
 /*jshint expr:true, boss:true */
 var UNDEFINED = void 0,
