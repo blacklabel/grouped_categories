@@ -1,0 +1,164 @@
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="./grouped-categories.js"></script>
+
+# Grouped Categories Highcharts module
+
+<div id="chart" style="height: 300px"></div>
+<script>
+window.chart = new Highcharts.Chart({
+    chart: {
+        renderTo: "chart",
+        type: "column"
+    },
+    title: {
+	    text: null
+    },
+    series: [{
+        data: [4, 14, 18, 5, 6, 5, 14, 15, 18]
+    }],
+    xAxis: {
+        categories: [{
+            name: "Fruit",
+            categories: ["Apple", "Banana", "Orange"]
+        }, {
+            name: "Vegetable",
+            categories: ["Carrot", "Potato", "Tomato"]
+        }, {
+            name: "Fish",
+            categories: ["Cod", "Salmon", "Tuna"]
+        }]
+    }
+});
+</script>
+
+### Requirements
+
+* Plugin requires the latest Highcharts (tested with 2.3.5)
+
+### Installation
+
+* Like any other Highcharts module (e.g. exporting), add `<script>` tag pointing to `grouped-categories.js` below Highcharts script tag.
+
+### Usage and demos
+
+It's quite simple and intuitive, just pass object as category:
+
+```
+xAxis: {
+    categories: [{
+        name: "Fruit",
+        categories: ["Apple", "Banana", "Orange"]
+    }, {
+        name: "Vegetable",
+        categories: ["Carrot", "Potato", "Tomato"]
+    }, {
+        name: "Fish",
+        categories: ["Cod", "Salmon", "Tuna"]
+    }]
+}
+```
+
+<div id="chart-basic" style="height: 300px"></div>
+<script>
+window.chart = new Highcharts.Chart({
+    chart: {
+        renderTo: "chart-basic",
+        type: "column"
+    },
+    series: [{
+        data: [4, 14, 18, 5, 6, 5, 14, 15, 18]
+    }],
+    xAxis: {
+        categories: [{
+            name: "Fruit",
+            categories: ["Apple", "Banana", "Orange"]
+        }, {
+            name: "Vegetable",
+            categories: ["Carrot", "Potato", "Tomato"]
+        }, {
+            name: "Fish",
+            categories: ["Cod", "Salmon", "Tuna"]
+        }]
+    }
+});
+</script>
+
+
+
+You can also define more category levels:
+
+```
+xAxis: {
+    categories: [{
+        name: "America",
+        categories: [{
+            name: "USA",
+            categories: ["New York", "San Francisco"]
+        }, {
+            name: "Canada",
+            categories: ["Toronto", "Vancouver"]
+        }, {
+            name: "Mexico",
+            categories: ["Acapulco", "Leon"]
+        }]
+    }, {
+        name: "Europe",
+        categories: [{
+            name: "United Kingdom",
+            categories: ["London", "Liverpool"]
+        }, {
+            name: "France",
+            categories: ["Paris", "Marseille"]
+        }, {
+            name: "Germany",
+            categories: ["Berlin", "Munich"]
+        }]
+    }]
+}
+```
+
+<div id="chart-more" style="height: 300px;"></div>
+<script>
+window.chart = new Highcharts.Chart({
+  chart: {
+    renderTo: "chart-more",
+    type: "column"
+  },
+  series: [{
+    data: [19, 6, 2, 1, 9, 4, 15, 2, 9, 11, 16, 18]
+  }],
+  xAxis: {
+    categories: [{
+      name: "America",
+      categories: [{
+        name: "USA",
+        categories: ["New York", "San Francisco"]
+      }, {
+        name: "Canada",
+        categories: ["Toronto", "Vancouver"]
+      }, {
+        name: "Mexico",
+        categories: ["Acapulco", "Leon"]
+      }]
+    }, {
+      name: "Europe",
+      categories: [{
+        name: "United Kingdom",
+        categories: ["London", "Liverpool"]
+      }, {
+        name: "France",
+        categories: ["Paris", "Marseille"]
+      }, {
+        name: "Germany",
+        categories: ["Berlin", "Munich"]
+      }]
+    }]
+  }
+});
+</script>
+
+
+### Code
+
+The latest code is available on github: [https://github.com/blacklabel/grouped_categories/](https://github.com/blacklabel/grouped_categories/)
