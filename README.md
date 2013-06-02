@@ -2,7 +2,10 @@
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="./grouped-categories.js"></script>
 
-# Grouped Categories Highcharts module
+# Grouped Categories - Highcharts module
+
+Go to project page to see this module in action: [http://blacklabel.github.io/grouped_categories/](http://blacklabel.github.io/grouped_categories/)
+
 
 <div id="chart" style="height: 300px"></div>
 <script>
@@ -162,3 +165,7 @@ window.chart = new Highcharts.Chart({
 ### Code
 
 The latest code is available on github: [https://github.com/blacklabel/grouped_categories/](https://github.com/blacklabel/grouped_categories/)
+
+### Demo
+
+Demos are available at project's github page: [http://blacklabel.github.io/grouped_categories/](http://blacklabel.github.io/grouped_categories/)
