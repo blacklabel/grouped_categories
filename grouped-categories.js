@@ -403,8 +403,8 @@ tickProto.addGroupedLabels = function (category) {
 };
 
 // set labels position & render categories grid
-tickProto.render = function (index, old) {
-  _tickRender.call(this, index, old);
+tickProto.render = function (index, old, opacity) {
+  _tickRender.call(this, index, false, opacity);
 
   if (!this.axis.isGrouped || !this.axis.categories[this.pos] || this.pos > this.axis.max)
     return;
