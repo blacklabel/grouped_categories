@@ -150,7 +150,31 @@ function walk(arr, key, fn) {
   }
 }
 
+function deepClone(thing) {
+    var other, key;
+   
+    function isArray(obj) {
+        return Object.prototype.toString.call(obj) === '[object Array]';
+    }
 
+    function isString(obj) {
+        return Object.prototype.toString.call(obj) === '[object String]';
+    }
+
+    // check for type, array or object
+    other = isArray(thing) ? [] : {};
+
+    for (key in thing) {
+        if (thing.hasOwnProperty(key)) {
+            if (isString(thing[key])) {
+                other[key] = thing[key];
+            } else {
+                other[key] = deepClone(thing[key]);
+            }           
+        }        
+    };
+    return other;
+}
 
 //
 // Axis prototype
@@ -166,9 +190,11 @@ axisProto.init = function (chart, options) {
 
 // setup required axis options
 axisProto.setupGroups = function (options) {
-  var categories  = HC.extend([], options.categories),
+  var categories,
       reverseTree = [],
       stats       = {};
+ 
+  categories = deepClone(options.categories);;
 
   // build categories tree
   buildTree(categories, reverseTree, stats);
