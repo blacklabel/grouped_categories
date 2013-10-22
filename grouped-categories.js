@@ -388,7 +388,7 @@ tickProto.addGroupedLabels = function (category) {
       options = axis.options.labels,
       useHTML = options.useHTML,
       css     = options.style,
-      attr    = { align: 'center' },
+      attr    = { align: axis.horiz ? 'center' : 'right' },
       size    = axis.horiz ? 'height' : 'width',
       depth   = 0,
       label;
