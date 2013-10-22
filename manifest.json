@@ -1,0 +1,30 @@
+{
+	"name": "Grouped-Categories",
+	"version": "0.0.1",
+	"title": "Grouped Categories",
+	"author": {
+		"name": "Black Label",
+		"url": "http://www.blacklabel.pl/"
+	},
+	"licenses": [
+		{
+			"type": "Creative Commons Attribution (CC)",
+			"url": "https://github.com/blacklabel/grouped_categories/blob/master/license.txt"
+		}
+	],
+	"dependencies": {
+		"highcharts": "2.3.5"
+	},
+	"demo": [
+		"http://jsfiddle.net/cFu8z/"
+	],
+	"description": "Plugin that allows grouped categories for Highcharts.",
+	"keywords": [
+		"categories",
+		"grouping"
+	],
+	"homepage": "http://blacklabel.github.io/grouped_categories/",	
+	"docs": "https://github.com/blacklabel/grouped_categories/",	
+	"bugs": "https://github.com/blacklabel/grouped_categories/issues",
+	"download": "https://github.com/blacklabel/grouped_categories/archive/master.zip"
+}
