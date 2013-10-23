@@ -247,7 +247,7 @@ axisProto.render = function () {
       grid    = axis.labelsGrid,
       horiz   = axis.horiz,
       d       = axis.labelsGridPath,
-      i       = 0,
+      i       = options.drawHorizontalBorders === false ? depth+1 : 0,
       offset  = axis.opposite ? (horiz ? top : right) : (horiz ? bottom : left),
       part;
 
