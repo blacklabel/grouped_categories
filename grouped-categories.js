@@ -309,7 +309,7 @@ axisProto.setCategories = function (newCategories, doRedraw) {
   this.setupGroups({
     categories: newCategories
   });
-
+  this.categories = this.userOptions.categories = newCategories;
   _axisSetCategories.call(this, this.categories, doRedraw);
 };
 
@@ -336,6 +336,7 @@ axisProto.cleanGroups = function () {
 
     delete group.tick;
   });
+  this.labelsGrid = null;
 };
 
 // keeps size of each categories level
