@@ -389,7 +389,7 @@ tickProto.addGroupedLabels = function (category) {
       options = axis.options.labels,
       useHTML = options.useHTML,
       css     = options.style,
-      attr    = { align: axis.horiz ? 'center' : 'right' },
+      attr    = { align: 'center' , rotation: options.rotation },
       size    = axis.horiz ? 'height' : 'width',
       depth   = 0,
       label;
@@ -398,7 +398,9 @@ tickProto.addGroupedLabels = function (category) {
   while (tick) {
     if (depth > 0 && !category.tick) {
       // render label element
-      label = chart.renderer.text(category.name, 0, 0, useHTML)
+      this.value = category.name;
+      var name = options.formatter ? options.formatter.call(this, category) : category.name;
+      label = chart.renderer.text(name, 0, 0, useHTML)
         .attr(attr)
         .css(css)
         .add(axis.labelGroup);
@@ -451,6 +453,7 @@ tickProto.render = function (index, old, opacity) {
       factor  = axis.directionFactor,
       xy      = tickPosition(tick, tickPos),
       start   = horiz ? xy.y : xy.x,
+      baseLine= axis.chart.renderer.fontMetrics(axis.options.labels.style.fontSize).b,
       depth   = 1,
       gridAttrs,
       lvlSize,
@@ -483,14 +486,13 @@ tickProto.render = function (index, old, opacity) {
     maxPos  = tickPosition(tick, mathMin(group.startAt + group.leaves - 1, max));
     bBox    = group.label.getBBox();
     lvlSize = axis.groupSize(depth);
-
     attrs = horiz ? {
       x: (minPos.x + maxPos.x) / 2,
-      y: bBox.height * factor + size + 4
+      y: size + lvlSize / 2 + baseLine - bBox.height / 2 - 4
     } : {
-      x: size,
-      y: (minPos.y + maxPos.y + bBox.height) / 2
-    };
+			x: size + lvlSize / 2,
+			y: (minPos.y + maxPos.y - bBox.height) / 2  + baseLine
+		};
 
     group.label.attr(attrs);
 
