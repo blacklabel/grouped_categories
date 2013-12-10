@@ -1,6 +1,6 @@
 {
 	"name": "Grouped-Categories",
-	"version": "0.0.1",
+	"version": "1.0.1",
 	"title": "Grouped Categories",
 	"author": {
 		"name": "Black Label",
@@ -22,6 +22,17 @@
 	"keywords": [
 		"categories",
 		"grouping"
+	],
+	"maintainers": [
+		{
+			"name": "Sebastian Bochan",
+			"email": "sebastian2@blacklabel.pl",
+			"url": "http://www.blacklabel.pl"
+		},{
+			"name": "Paweł Fus",
+			"email": "pawel@blacklabel.pl",
+			"url": "http://www.blacklabel.pl"
+		}
 	],
 	"homepage": "http://blacklabel.github.io/grouped_categories/",	
 	"docs": "https://github.com/blacklabel/grouped_categories/",	
