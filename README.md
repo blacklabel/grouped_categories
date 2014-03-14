@@ -14,9 +14,6 @@ window.chart = new Highcharts.Chart({
         renderTo: "chart",
         type: "column"
     },
-    title: {
-	    text: null
-    },
     series: [{
         data: [4, 14, 18, 5, 6, 5, 14, 15, 18]
     }],
@@ -169,3 +166,4 @@ The latest code is available on github: [https://github.com/blacklabel/grouped_c
 ### Demo
 
 Demos are available at project's github page: [http://blacklabel.github.io/grouped_categories/](http://blacklabel.github.io/grouped_categories/)
+
