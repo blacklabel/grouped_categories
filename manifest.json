@@ -1,6 +1,6 @@
 {
 	"name": "Grouped-Categories",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"title": "Grouped Categories",
 	"author": {
 		"name": "Black Label",
@@ -16,7 +16,7 @@
 		"highcharts": "2.3.5"
 	},
 	"demo": [
-		"http://jsfiddle.net/cFu8z/"
+		"http://jsfiddle.net/BlackLabel/TFhd7/"
 	],
 	"description": "Plugin that allows grouped categories for Highcharts.",
 	"keywords": [

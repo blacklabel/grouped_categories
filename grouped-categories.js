@@ -27,6 +27,7 @@ var UNDEFINED = void 0,
 
 
 function Category(obj, parent) {
+	this.userOptions = deepClone(obj);
   this.name = obj.name || obj;
   this.parent = parent;
 
@@ -433,9 +434,11 @@ tickProto.addGroupedLabels = function (category) {
 
 // set labels position & render categories grid
 tickProto.render = function (index, old, opacity) {
-  _tickRender.call(this, index, false, opacity);
+  _tickRender.call(this, index, old, opacity);
 
-  if (!this.axis.isGrouped || !this.axis.categories[this.pos] || this.pos > this.axis.max)
+  var treeCat = this.axis.categories[this.pos];
+  
+  if (!this.axis.isGrouped || !treeCat || this.pos > this.axis.max)
     return;
 
   var tick    = this,
@@ -479,11 +482,23 @@ tickProto.render = function (index, old, opacity) {
 
   size = start + size;
 
+  function fixOffset(group, treeCat, tick){
+  		var ret = 0;
+			if(isFirst) {
+					console.log(group, treeCat, tick);
+					ret = $.inArray(treeCat.name, treeCat.parent.categories);
+					ret = ret < 0 ? 0 : ret;
+					return ret;
+			} 
+			return ret;
+  }
 
 
   while (group = group.parent) {
+  	var fix = fixOffset(group, treeCat, tick);
+  	
     minPos  = tickPosition(tick, mathMax(group.startAt - 1, min - 1));
-    maxPos  = tickPosition(tick, mathMin(group.startAt + group.leaves - 1, max));
+    maxPos  = tickPosition(tick, mathMin(group.startAt + group.leaves - 1 - fix, max));
     bBox    = group.label.getBBox();
     lvlSize = axis.groupSize(depth);
     attrs = horiz ? {

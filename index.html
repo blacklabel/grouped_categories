@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+  
+<link rel="stylesheet" charset="utf-8" type="text/css" href="css/styles.css"/>
+	
+<title>Grouped Categories - Highcharts module</title>
+
+</head>
+<body>
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+
+
+<script src="http://code.highcharts.com/highcharts.js"></script>
+
+
+<script src="./grouped-categories.js"></script>
+
+
+<script>
+		Highcharts.setOptions({
+				chart: {
+						borderWidth: 5,
+						borderColor: '#e8eaeb',
+						borderRadius: 0,
+						backgroundColor: '#f7f7f7'
+				},
+				title: {
+						style: {
+								'fontSize': '1em'
+						},
+						useHTML: true,
+						x: -27,
+						y: 8,
+						text: '<span class="chart-title"> Grouped categories <span class="chart-href"> <a href="http://www.blacklabel.pl/highcharts" target="_blank"> Black Label </a> </span> <span class="chart-subtitle">plugin by </span></span>'
+				}
+		});
+</script>		
+
+<h1>Grouped Categories - Highcharts module</h1>
+
+<p>Go to project page to see this module in action: <a href="http://blacklabel.github.io/grouped_categories/">http://blacklabel.github.io/grouped_categories/</a></p>
+
+<div class="chart-container" id="chart"></div>
+
+
+<script>
+window.chart = new Highcharts.Chart({
+    chart: {
+        renderTo: "chart",
+        type: "column"
+    },
+    series: [{
+        data: [4, 14, 18, 5, 6, 5, 14, 15, 18]
+    }],
+    xAxis: {
+        categories: [{
+            name: "Fruit",
+            categories: ["Apple", "Banana", "Orange"]
+        }, {
+            name: "Vegetable",
+            categories: ["Carrot", "Potato", "Tomato"]
+        }, {
+            name: "Fish",
+            categories: ["Cod", "Salmon", "Tuna"]
+        }]
+    }
+});
+</script>
+
+
+<h3>Requirements</h3>
+
+<ul>
+<li>Plugin requires the latest Highcharts (tested with 2.3.5)</li>
+</ul>
+
+
+<h3>Installation</h3>
+
+<ul>
+<li>Like any other Highcharts module (e.g. exporting), add <code>&lt;script&gt;</code> tag pointing to <code>grouped-categories.js</code> below Highcharts script tag.</li>
+</ul>
+
+
+<h3>Usage and demos</h3>
+
+<p>It's quite simple and intuitive, just pass object as category:</p>
+
+<pre><code>xAxis: {
+    categories: [{
+        name: "Fruit",
+        categories: ["Apple", "Banana", "Orange"]
+    }, {
+        name: "Vegetable",
+        categories: ["Carrot", "Potato", "Tomato"]
+    }, {
+        name: "Fish",
+        categories: ["Cod", "Salmon", "Tuna"]
+    }]
+}
+</code></pre>
+
+<div class="chart-container" id="chart-basic"></div>
+
+
+<script>
+window.chart = new Highcharts.Chart({
+    chart: {
+        renderTo: "chart-basic",
+        type: "column"
+    },
+    series: [{
+        data: [4, 14, 18, 5, 6, 5, 14, 15, 18]
+    }],
+    xAxis: {
+        categories: [{
+            name: "Fruit",
+            categories: ["Apple", "Banana", "Orange"]
+        }, {
+            name: "Vegetable",
+            categories: ["Carrot", "Potato", "Tomato"]
+        }, {
+            name: "Fish",
+            categories: ["Cod", "Salmon", "Tuna"]
+        }]
+    }
+});
+</script>
+
+
+<p>You can also define more category levels:</p>
+
+<pre><code>xAxis: {
+    categories: [{
+        name: "America",
+        categories: [{
+            name: "USA",
+            categories: ["New York", "San Francisco"]
+        }, {
+            name: "Canada",
+            categories: ["Toronto", "Vancouver"]
+        }, {
+            name: "Mexico",
+            categories: ["Acapulco", "Leon"]
+        }]
+    }, {
+        name: "Europe",
+        categories: [{
+            name: "United Kingdom",
+            categories: ["London", "Liverpool"]
+        }, {
+            name: "France",
+            categories: ["Paris", "Marseille"]
+        }, {
+            name: "Germany",
+            categories: ["Berlin", "Munich"]
+        }]
+    }]
+}
+</code></pre>
+
+<div class="chart-container" id="chart-more"></div>
+
+
+<script>
+window.chart = new Highcharts.Chart({
+  chart: {
+    renderTo: "chart-more",
+    type: "column"
+  },
+  series: [{
+    data: [19, 6, 2, 1, 9, 4, 15, 2, 9, 11, 16, 18]
+  }],
+  xAxis: {
+    categories: [{
+      name: "America",
+      categories: [{
+        name: "USA",
+        categories: ["New York", "San Francisco"]
+      }, {
+        name: "Canada",
+        categories: ["Toronto", "Vancouver"]
+      }, {
+        name: "Mexico",
+        categories: ["Acapulco", "Leon"]
+      }]
+    }, {
+      name: "Europe",
+      categories: [{
+        name: "United Kingdom",
+        categories: ["London", "Liverpool"]
+      }, {
+        name: "France",
+        categories: ["Paris", "Marseille"]
+      }, {
+        name: "Germany",
+        categories: ["Berlin", "Munich"]
+      }]
+    }]
+  }
+});
+</script>
+
+
+<h3>Code</h3>
+
+<p>The latest code is available on github: <a href="https://github.com/blacklabel/grouped_categories/">https://github.com/blacklabel/grouped_categories/</a></p>
+
+<h3>Demo</h3>
+
+<p>Demos are available at project's github page: <a href="http://blacklabel.github.io/grouped_categories/">http://blacklabel.github.io/grouped_categories/</a></p>
+</body>
+</html>
