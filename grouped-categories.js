@@ -156,9 +156,9 @@ function deepClone(thing) {
     function isArray(obj) {
         return Object.prototype.toString.call(obj) === '[object Array]';
     }
-
-    function isString(obj) {
-        return Object.prototype.toString.call(obj) === '[object String]';
+    
+    function isObject(obj) {
+        return Object.prototype.toString.call(obj) === '[object Object]';
     }
 
     // check for type, array or object
@@ -166,10 +166,10 @@ function deepClone(thing) {
 
     for (key in thing) {
         if (thing.hasOwnProperty(key)) {
-            if (isString(thing[key])) {
-                other[key] = thing[key];
-            } else {
+            if (isObject(thing[key])) {
                 other[key] = deepClone(thing[key]);
+            } else {
+                other[key] = thing[key];
             }           
         }        
     };
