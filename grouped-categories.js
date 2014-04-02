@@ -459,6 +459,8 @@ tickProto.render = function (index, old, opacity) {
       depth   = 1,
       gridAttrs,
       lvlSize,
+      minPos,
+      maxPos,
       attrs,
       bBox;
 
