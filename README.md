@@ -156,7 +156,53 @@ window.chart = new Highcharts.Chart({
     }]
   }
 });
+
 </script>
+
+
+For each level you can define subset of styling options. 0-level categories are based on the default Highcharts options.
+
+```
+xAxis: {  	
+	labels: {
+	    groupedOptions: [{
+	  	    style: {
+	  	  	    color: 'red' // set red font for labels in 1st-Level  
+	  	    }
+	    }, {
+	  	    rotation: -45, // rotate labels for a 2nd-level
+	  	    align: 'right'
+	    }],
+	    rotation: 0 // 0-level options aren't changed, use them as always
+    },
+    categories: [{
+        name: "America",
+        categories: [{
+            name: "USA",
+            categories: ["New York", "San Francisco"]
+        }, {
+            name: "Canada",
+            categories: ["Toronto", "Vancouver"]
+        }, {
+            name: "Mexico",
+            categories: ["Acapulco", "Leon"]
+        }]
+    }, {
+        name: "Europe",
+        categories: [{
+            name: "United Kingdom",
+            categories: ["London", "Liverpool"]
+        }, {
+            name: "France",
+            categories: ["Paris", "Marseille"]
+        }, {
+            name: "Germany",
+            categories: ["Berlin", "Munich"]
+        }]
+    }]
+}
+```
+
 
 
 ### Code
