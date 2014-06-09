@@ -11,6 +11,7 @@ var UNDEFINED = void 0,
     mathRound = Math.round,
     mathMin   = Math.min,
     mathMax   = Math.max,
+    merge     = HC.merge,
 
     // cache prototypes
     axisProto  = HC.Axis.prototype,
@@ -389,6 +390,7 @@ tickProto.addGroupedLabels = function (category) {
       options = axis.options.labels,
       useHTML = options.useHTML,
       css     = options.style,
+      userAttr= options.groupedOptions,
       attr    = { align: 'center' , rotation: options.rotation },
       size    = axis.horiz ? 'height' : 'width',
       depth   = 0,
@@ -399,10 +401,13 @@ tickProto.addGroupedLabels = function (category) {
     if (depth > 0 && !category.tick) {
       // render label element
       this.value = category.name;
-      var name = options.formatter ? options.formatter.call(this, category) : category.name;
+      var name = options.formatter ? options.formatter.call(this, category) : category.name,
+      	  hasOptions = userAttr && userAttr[depth-1],
+     	  mergedAttrs =  hasOptions ? merge(attr, userAttr[depth-1] ) : attr,
+     	  mergedCSS = hasOptions && userAttr[depth-1].style ? merge(css, userAttr[depth-1].style ) : css;
       label = chart.renderer.text(name, 0, 0, useHTML)
-        .attr(attr)
-        .css(css)
+        .attr(mergedAttrs)
+        .css(mergedCSS)
         .add(axis.labelGroup);
 
       // tick properties
