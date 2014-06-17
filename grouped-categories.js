@@ -299,7 +299,9 @@ axisProto.render = function () {
       tick.destroyed = 0;
     }
     else
-      tick.label.show();
+	  tick.label.attr({
+		visibility: ''
+	  });
   });
 };
 
