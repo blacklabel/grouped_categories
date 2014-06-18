@@ -493,7 +493,7 @@ tickProto.render = function (index, old, opacity) {
   function fixOffset(group, treeCat, tick){
   		var ret = 0;
 			if(isFirst) {
-					ret = $.inArray(treeCat.name, treeCat.parent.categories);
+					ret = jQuery.inArray(treeCat.name, treeCat.parent.categories);
 					ret = ret < 0 ? 0 : ret;
 					return ret;
 			} 
