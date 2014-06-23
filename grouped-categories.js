@@ -5,7 +5,7 @@
  *
  * License: Creative Commons Attribution (CC)
  */
-(function(HC){
+(function(HC, HA){
 /*jshint expr:true, boss:true */
 var UNDEFINED = void 0,
     mathRound = Math.round,
@@ -493,7 +493,7 @@ tickProto.render = function (index, old, opacity) {
   function fixOffset(group, treeCat, tick){
   		var ret = 0;
 			if(isFirst) {
-					ret = $.inArray(treeCat.name, treeCat.parent.categories);
+					ret = HA.inArray(treeCat.name, treeCat.parent.categories);
 					ret = ret < 0 ? 0 : ret;
 					return ret;
 			} 
@@ -548,4 +548,4 @@ tickProto.getLabelSize = function () {
     return _tickGetLabelSize.call(this);
 };
 
-}(Highcharts));
+}(Highcharts, HighchartsAdapter));
