@@ -1,6 +1,6 @@
 {
 	"name": "Grouped-Categories",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"title": "Grouped Categories",
 	"author": {
 		"name": "Black Label",
@@ -26,7 +26,7 @@
 	"maintainers": [
 		{
 			"name": "Sebastian Bochan",
-			"email": "sebastian2@blacklabel.pl",
+			"email": "sebastian@blacklabel.pl",
 			"url": "http://www.blacklabel.pl"
 		},{
 			"name": "Paweł Fus",
