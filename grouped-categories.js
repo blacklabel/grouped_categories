@@ -259,7 +259,8 @@ axisProto.render = function () {
   if (!grid) {
     grid = axis.labelsGrid = axis.chart.renderer.path()
       .attr({
-        strokeWidth: options.lineWidth,
+        strokeWidth: options.lineWidth, // < 4.0.3
+        'stroke-width': options.lineWidth, // 4.0.3+ #30
         stroke: options.lineColor
       })
       .add(axis.axisGroup);
