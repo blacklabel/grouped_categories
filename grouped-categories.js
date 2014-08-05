@@ -368,7 +368,9 @@ axisProto.groupSize = function (level, position) {
 
 // Override methods prototypes
 tickProto.addLabel = function () {
-  var category;
+  var category,
+      axis = this.axis,
+      options = axis.options.labels;
 
   _tickAddLabel.call(this);
 
@@ -377,9 +379,12 @@ tickProto.addLabel = function () {
     return;
 
   // set label text
-  if (category.name)
-    this.label.attr('text', category.name);
-
+  if (category.name) {
+    this.value = category;
+    var labelText = options.formatter ? options.formatter.call(this, category) : category.name;
+	this.label.attr('text', labelText);
+  }
+  
   // create elements for parent categories
   if (this.axis.isGrouped)
     this.addGroupedLabels(category);
