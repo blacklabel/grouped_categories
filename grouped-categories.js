@@ -301,7 +301,7 @@ axisProto.render = function () {
     }
     else
 	  tick.label.attr({
-		visibility: ''
+		visibility: visible ? 'visible' : 'hidden'
 	  });
   });
 };
