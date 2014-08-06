@@ -161,22 +161,40 @@ function deepClone(thing) {
     function isObject(obj) {
         return Object.prototype.toString.call(obj) === '[object Object]';
     }
+    
+    function isString(obj) {
+        return Object.prototype.toString.call(obj) === '[object String]';
+    }
 
     // check for type, array or object
     other = isArray(thing) ? [] : {};
 
     for (key in thing) {
         if (thing.hasOwnProperty(key)) {
-            if (isObject(thing[key])) {
+        		if(isString(thing[key])){
+                other[key] = thing[key];
+            } else if (isObject(thing[key])) {
                 other[key] = deepClone(thing[key]);
             } else {
-                other[key] = thing[key];
-            }           
-        }        
+                other[key] = deepCloneArray(thing[key]);
+            }
+        }       
     };
+    
     return other;
 }
-
+function deepCloneArray(arr) {
+    var out = [], i = 0, len = arr.length;
+    for (; i < len; i++) {
+        var item = arr[i];
+        var obj = {};
+        for (var k in item) {
+            obj[k] = item[k];
+        }
+        out.push(obj);
+    }
+    return out;
+}
 //
 // Axis prototype
 //
