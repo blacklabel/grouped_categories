@@ -222,7 +222,7 @@ axisProto.render = function () {
       left    = axis.left,
       right   = left + axis.width,
       bottom  = top + axis.height,
-      visible = axis.hasVisibleSeries,
+      visible = axis.hasVisibleSeries || axis.hasData,
       depth   = axis.labelsDepth,
       grid    = axis.labelsGrid,
       horiz   = axis.horiz,
@@ -496,14 +496,16 @@ tickProto.render = function (index, old, opacity) {
 			y: (minPos.y + maxPos.y - bBox.height) / 2  + baseLine
 		};
 
-    group.label.attr(attrs);
-
-    if (grid) {
-      gridAttrs = horiz ?
-        [maxPos.x, size, maxPos.x, size + lvlSize] :
-        [size, maxPos.y, size + lvlSize, maxPos.y];
-
-      addGridPart(grid, gridAttrs);
+		if(!isNaN(attrs.x) && !isNaN(attrs.y)){ 
+			group.label.attr(attrs);
+	
+			if (grid) {
+				gridAttrs = horiz ?
+					[maxPos.x, size, maxPos.x, size + lvlSize] :
+					[size, maxPos.y, size + lvlSize, maxPos.y];
+	
+				addGridPart(grid, gridAttrs);
+			}
     }
 
     size += lvlSize;
