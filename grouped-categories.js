@@ -462,11 +462,12 @@ tickProto.render = function (index, old, opacity) {
     addGridPart(grid, gridAttrs);
   }
 
-  gridAttrs = horiz ?
-    [xy.x, xy.y, xy.x, xy.y + size] :
-    [xy.x, xy.y, xy.x + size, xy.y];
-
-  addGridPart(grid, gridAttrs);
+    
+	if(horiz && axis.left < xy.x) {
+			addGridPart(grid, [xy.x, xy.y, xy.x, xy.y + size]);
+	} else if(!horiz && axis.top < xy.y){
+			addGridPart(grid, [xy.x, xy.y, xy.x + size, xy.y]);
+	}
 
   size = start + size;
 
@@ -500,11 +501,11 @@ tickProto.render = function (index, old, opacity) {
 			group.label.attr(attrs);
 	
 			if (grid) {
-				gridAttrs = horiz ?
-					[maxPos.x, size, maxPos.x, size + lvlSize] :
-					[size, maxPos.y, size + lvlSize, maxPos.y];
-	
-				addGridPart(grid, gridAttrs);
+				if(horiz && axis.left < maxPos.x) {
+						addGridPart(grid, [maxPos.x, size, maxPos.x, size + lvlSize]);
+				} else if(!horiz && axis.top < maxPos.y){
+						addGridPart(grid, [size, maxPos.y, size + lvlSize, maxPos.y]);
+				}
 			}
     }
 
