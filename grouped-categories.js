@@ -356,7 +356,7 @@ tickProto.addLabel = function () {
     return;
 
   // set label text - but applied after formatter #46
-  if (category.name)
+  if (category.name && this.label)
     this.label.attr('text', this.axis.labelFormatter.call({
 			axis: this.axis,
 			chart: this.axis.chart,
@@ -366,7 +366,7 @@ tickProto.addLabel = function () {
 		}));
 
   // create elements for parent categories
-  if (this.axis.isGrouped)
+  if (this.axis.isGrouped && this.axis.options.labels.enabled)
     this.addGroupedLabels(category);
 };
 
