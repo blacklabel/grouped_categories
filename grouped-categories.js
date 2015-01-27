@@ -82,13 +82,13 @@ function buildTree(cats, out, options, parent, depth) {
     cat = cats[len];
 
 
-    if (parent)
-      cat.parent = parent;
 
 
-    if (cat.categories)
+    if (cat.categories){
+		if (parent)
+			cat.parent = parent;
       buildTree(cat.categories, out, options, cat, depth + 1);
-
+	}
     else
       addLeaf(out, cat, parent);
   }
