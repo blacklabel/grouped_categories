@@ -80,10 +80,7 @@ function buildTree(cats, out, options, parent, depth) {
 
   while (len--) {
     cat = cats[len];
-
-
-
-
+    
     if (cat.categories){
 		if (parent)
 			cat.parent = parent;
@@ -206,7 +203,6 @@ axisProto.render = function () {
   // and generate grid on grouped axes,
   // use tiny number to force highcharts to hide tick
   this.options.tickLength = this.isGrouped ? 0.001 : this.originalTickLength;
-
   _axisRender.call(this);
 
 
@@ -215,7 +211,7 @@ axisProto.render = function () {
       this.labelsGrid.attr({visibility: 'hidden'});
     return;
   }
-
+  console.log(this);
   var axis    = this,
       options = axis.options,
       top     = axis.top,
@@ -229,8 +225,9 @@ axisProto.render = function () {
       d       = axis.labelsGridPath,
       i       = options.drawHorizontalBorders === false ? depth+1 : 0,
       offset  = axis.opposite ? (horiz ? top : right) : (horiz ? bottom : left),
+      gridVisible = (!options.hideGrid && visible),
       part;
-
+      
   if (axis.userTickLength)
     depth -= 1;
 
@@ -260,7 +257,7 @@ axisProto.render = function () {
   // draw grid path
   grid.attr({
     d: d,
-    visibility: visible ? 'visible' : 'hidden'
+    visibility: gridVisible ? 'visible' : 'hidden'
   });
 
   axis.labelGroup.attr({
