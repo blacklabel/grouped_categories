@@ -302,7 +302,7 @@ axisProto.cleanGroups = function () {
       n;
 
   for (n in ticks)
-    if (ticks[n].parent);
+    if (ticks[n].parent)
       delete ticks[n].parent;
 
   walk(this.categoriesTree, 'categories', function (group) {
