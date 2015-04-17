@@ -326,11 +326,21 @@ axisProto.cleanGroups = function () {
 // keeps size of each categories level
 axisProto.groupSize = function (level, position) {
   var positions = this.labelsSizes,
-      direction = this.directionFactor;
-
+      direction = this.directionFactor,
+      groupedOptions = this.options.labels.groupedOptions[level-1],
+      userXY = 0;
+      
+  if(groupedOptions) {
+  	if(direction == -1) {
+  		userXY = groupedOptions.x ? groupedOptions.x : 0;
+  	} else {
+  		userXY = groupedOptions.y ? groupedOptions.y : 0;
+  	}
+  }  	
+  
   if (position !== UNDEFINED)
-    positions[level] = mathMax(positions[level] || 0, position + 10);
-
+    positions[level] = mathMax(positions[level] || 0, position + 10 + Math.abs(userXY)) ;
+  
   if (level === true)
     return sum(positions) * direction;
 
@@ -380,7 +390,7 @@ tickProto.addGroupedLabels = function (category) {
       useHTML = options.useHTML,
       css     = options.style,
       userAttr= options.groupedOptions,
-      attr    = { align: 'center' , rotation: options.rotation },
+      attr    = { align: 'center' , rotation: options.rotation, x: 0, y: 0 },
       size    = axis.horiz ? 'height' : 'width',
       depth   = 0,
       label;
@@ -394,6 +404,7 @@ tickProto.addGroupedLabels = function (category) {
       	  hasOptions = userAttr && userAttr[depth-1],
      	  mergedAttrs =  hasOptions ? merge(attr, userAttr[depth-1] ) : attr,
      	  mergedCSS = hasOptions && userAttr[depth-1].style ? merge(css, userAttr[depth-1].style ) : css;
+     	  
       label = chart.renderer.text(name, 0, 0, useHTML)
         .attr(mergedAttrs)
         .css(mergedCSS)
@@ -405,6 +416,10 @@ tickProto.addGroupedLabels = function (category) {
       tick.leaves = category.leaves;
       tick.visible = this.childCount;
       tick.label = label;
+      tick.labelOffsets = {
+      		x: mergedAttrs.x,
+      		y: mergedAttrs.y
+      };
 
       // link tick with category
       category.tick = tick;
@@ -460,6 +475,7 @@ tickProto.render = function (index, old, opacity) {
 
   // render grid for "normal" categories (first-level), render left grid line only for the first category
   if (isFirst) {
+  	
     gridAttrs = horiz ?
       [axis.left, xy.y, axis.left, xy.y + axis.groupSize(true)] :
       axis.isXAxis ?
@@ -490,18 +506,21 @@ tickProto.render = function (index, old, opacity) {
 
 
   while (group = group.parent) {
-  	var fix = fixOffset(group, treeCat, tick);
+  	var fix = fixOffset(group, treeCat, tick),
+  			userX = group.labelOffsets.x,
+  			userY = group.labelOffsets.y;
   	
     minPos  = tickPosition(tick, mathMax(group.startAt - 1, min - 1));
     maxPos  = tickPosition(tick, mathMin(group.startAt + group.leaves - 1 - fix, max));
-    bBox    = group.label.getBBox();
+    bBox    = group.label.getBBox(true);
     lvlSize = axis.groupSize(depth);
+    
     attrs = horiz ? {
-      x: (minPos.x + maxPos.x) / 2,
-      y: size + lvlSize / 2 + baseLine - bBox.height / 2 - 4
+      x: (minPos.x + maxPos.x) / 2 + userX,
+      y: size + lvlSize / 2 + baseLine - bBox.height / 2 - 4 + userY / 2
     } : {
-			x: size + lvlSize / 2,
-			y: (minPos.y + maxPos.y - bBox.height) / 2  + baseLine
+			x: size + lvlSize / 2 + userX,
+			y: (minPos.y + maxPos.y - bBox.height) / 2  + baseLine + userY
 		};
 
 		if(!isNaN(attrs.x) && !isNaN(attrs.y)){ 
