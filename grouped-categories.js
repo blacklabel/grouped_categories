@@ -327,7 +327,7 @@ axisProto.cleanGroups = function () {
 axisProto.groupSize = function (level, position) {
   var positions = this.labelsSizes,
       direction = this.directionFactor,
-      groupedOptions = this.options.labels.groupedOptions[level-1],
+      groupedOptions = this.options.labels.groupedOptions ? this.options.labels.groupedOptions[level-1] : false,
       userXY = 0;
       
   if(groupedOptions) {
