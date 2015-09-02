@@ -1,5 +1,5 @@
 /**
- * Grouped Categories v1.0.8 (2015-03-04)
+ * Grouped Categories v1.0.9 (2015-09-02)
  *
  * (c) 2012-2015 Black Label
  *
