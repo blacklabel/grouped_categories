@@ -1,7 +1,7 @@
 /**
- * Grouped Categories v1.0.3 (2014-03-14)
+ * Grouped Categories v1.0.8 (2015-03-04)
  *
- * (c) 2012-2013 Black Label
+ * (c) 2012-2015 Black Label
  *
  * License: Creative Commons Attribution (CC)
  */
@@ -12,6 +12,7 @@ var UNDEFINED = void 0,
     mathMin   = Math.min,
     mathMax   = Math.max,
     merge     = HC.merge,
+	pick	  = HC.pick,
 
     // cache prototypes
     axisProto  = HC.Axis.prototype,
@@ -229,18 +230,22 @@ axisProto.render = function () {
       d       = axis.labelsGridPath,
       i       = options.drawHorizontalBorders === false ? depth+1 : 0,
       offset  = axis.opposite ? (horiz ? top : right) : (horiz ? bottom : left),
-      part;
+      part,
+	  tickWidth;
 
   if (axis.userTickLength)
     depth -= 1;
 
   // render grid path for the first time
   if (!grid) {
+	// #66: tickWidth for x axis defaults to 1, for y to 0
+	tickWidth = pick(options.tickWidth, axis.isXAxis ? 1 : 0);
+	
     grid = axis.labelsGrid = axis.chart.renderer.path()
       .attr({
       		// #58: use tickWidth/tickColor instead of lineWidth/lineColor: 
-        strokeWidth: options.tickWidth, // < 4.0.3
-        'stroke-width': options.tickWidth, // 4.0.3+ #30
+        strokeWidth: tickWidth, // < 4.0.3
+        'stroke-width': tickWidth, // 4.0.3+ #30
         stroke: options.tickColor
       })
       .add(axis.axisGroup);
