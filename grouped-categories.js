@@ -195,7 +195,7 @@ axisProto.setupGroups = function (options) {
   this.tickWidth        = pick(options.tickWidth, this.isXAxis ? 1 : 0);
   this.directionFactor  = [-1, 1, 1, -1][this.side];
 
-  this.options.lineWidth = options.lineWidth || 1;
+  this.options.lineWidth = pick(options.lineWidth, 1);
 };
 
 
