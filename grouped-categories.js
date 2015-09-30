@@ -239,27 +239,33 @@ axisProto.render = function () {
       .add(axis.axisGroup);
   }
   
-  //Calculate how mow much the base category is being multipled by
-  var currentTree = axis.categoriesTree;
-  var catMultiplier = 1;
-  for(var j=0; j < depth; j++){
-	  catMultiplier *= currentTree.length;
-	  currentTree = currentTree[0].categories;
-  }
-  //Calculate the amount of values in the first cat
-  var firstCatCount = axis.categories.length/catMultiplier;
+  //Generate an array that contains the lengths of the category sets closest to the axis
+  var baseCategoryLengths = [];
+  var drill = function(categories, curDepth, targetDepth){
+	  if(curDepth == targetDepth)
+		return baseCategoryLengths.push(categories.length);
+	  else
+	  	for(var j=0; j < categories.length; j++){
+	  		drill(categories[j].categories, curDepth+1, targetDepth);
+	  	}
+  };
+  drill(axis.categoriesTree, 0, depth);
+  
   //We increment through the grid array by <number of levels> * <amount of array indexes to define a point>(it takes 6 indexes in the array to define a line)
   var arrayIncrement = (depth+1)*6;
-  //The X/Y position of the start of the grid (X pos if on Y axis, Y pos if on X axis)
+  //The Y position of the 'base' of the axis (X pos if on Y axis, Y pos if on X axis)
   var axisBaseYCoord = (horiz) ? d[2] : d[1];
   //We target the X pos if on Y axis, we target the Y pos if on X axis)
   var targetCoord = (horiz) ? 3 : 4;
-  //We check every 6th grid pos (but we skip the 1st one)
+  //We check every 6th grid index because 6 indexes = 1 point
+  var curCategoryPos = 0;
+  var targetLine = baseCategoryLengths[curCategoryPos++]*arrayIncrement;
   for(var j=11; j < d.length; j+=6){
-		//If the cur. position matches the end of a "set" of first categories, it's a divider we want to keep, so we skip the deletion
-		if((j+1)%(firstCatCount*arrayIncrement) == 0){
-			//We modify the current lines start position to be the grids base (covers the gap left by deleting all the 1st level lines)
-			d[j-targetCoord] = axisBaseYCoord;//or -3
+	  //If the cur. position matches the target line we want to keep
+	  if((j+1)%(targetLine) == 0){
+		  targetLine += baseCategoryLengths[curCategoryPos++]*arrayIncrement;
+		  	//We modify the current lines start position to be the grids base (covers the gap left by deleting all the 1st level lines)
+			d[j-targetCoord] = axisBaseYCoord;
 			//We skip the next grid line, since it's an extension of the current grid line
 			j+=6;
 			continue;
