@@ -411,6 +411,9 @@ tickProto.addGroupedLabels = function (category) {
       	  hasOptions = userAttr && userAttr[depth-1],
      	  mergedAttrs =  hasOptions ? merge(attr, userAttr[depth-1] ) : attr,
      	  mergedCSS = hasOptions && userAttr[depth-1].style ? merge(css, userAttr[depth-1].style ) : css;
+
+      //#63: style is passed in CSS and not as an attribute
+      delete mergedAttrs.style;
      	  
       label = chart.renderer.text(name, 0, 0, useHTML)
         .attr(mergedAttrs)
