@@ -1,6 +1,6 @@
 {
 	"name": "Grouped-Categories",
-	"version": "1.0.9",
+	"version": "1.0.10",
 	"title": "Grouped Categories",
 	"author": {
 		"name": "Black Label",
@@ -31,6 +31,10 @@
 		},{
 			"name": "Paweł Fus",
 			"email": "pawel@blacklabel.pl",
+			"url": "http://www.blacklabel.pl"
+		},{
+			"name": "Kacper Madej",
+			"email": "kacper@blacklabel.pl",
 			"url": "http://www.blacklabel.pl"
 		}
 	],

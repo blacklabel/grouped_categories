@@ -1,5 +1,5 @@
 /**
- * Grouped Categories v1.0.9 (2015-09-02)
+ * Grouped Categories v1.0.10 (2015-11-02)
  *
  * (c) 2012-2015 Black Label
  *
@@ -562,9 +562,16 @@ tickProto.destroy = function () {
 
 // return size of the label (height for horizontal, width for vertical axes)
 tickProto.getLabelSize = function () {
-  if (this.axis.isGrouped === true)
+  if (this.axis.isGrouped === true) {
+    // #72, getBBox might need recalculating when chart is tall
+    var size = _tickGetLabelSize.call(this) + 10,
+        topLabelSize = this.axis.labelsSizes[0];
+    if (topLabelSize < size) {
+        this.axis.labelsSizes[0] = size;
+    }
+
     return sum(this.axis.labelsSizes);
-  else
+  } else
     return _tickGetLabelSize.call(this);
 };
 
