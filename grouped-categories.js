@@ -1,11 +1,11 @@
 /**
- * Grouped Categories v1.0.10 (2015-11-02)
+ * Grouped Categories v1.0.11 (2015-12-07)
  *
  * (c) 2012-2015 Black Label
  *
  * License: Creative Commons Attribution (CC)
  */
-(function(HC, HA){
+(function(HC){
 /*jshint expr:true, boss:true */
 var UNDEFINED = void 0,
     mathRound = Math.round,
@@ -13,6 +13,8 @@ var UNDEFINED = void 0,
     mathMax   = Math.max,
     merge     = HC.merge,
     pick      = HC.pick,
+    // #74, since Highcharts 4.1.10 HighchartsAdapter is only provided by the Highcharts Standalone Framework
+    inArray   = (window.HighchartsAdapter && window.HighchartsAdapter.inArray) || HC.inArray,
 
     // cache prototypes
     axisProto  = HC.Axis.prototype,
@@ -508,7 +510,7 @@ tickProto.render = function (index, old, opacity) {
   function fixOffset(group, treeCat, tick){
   		var ret = 0;
 			if(isFirst) {
-					ret = HA.inArray(treeCat.name, treeCat.parent.categories);
+					ret = inArray(treeCat.name, treeCat.parent.categories);
 					ret = ret < 0 ? 0 : ret;
 					return ret;
 			} 
@@ -575,4 +577,4 @@ tickProto.getLabelSize = function () {
     return _tickGetLabelSize.call(this);
 };
 
-}(Highcharts, HighchartsAdapter));
+}(Highcharts));
