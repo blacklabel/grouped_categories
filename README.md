@@ -1,14 +1,32 @@
-<link rel="stylesheet" charset="utf-8" type="text/css" href="http://blacklabel.github.io/grouped_categories/css/styles.css"/>
+<link rel="stylesheet" charset="utf-8" type="text/css" href="http://blacklabel.github.io/grouped_categories/css/styles-plugins-registry.css"/>
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://blacklabel.github.io/grouped_categories/grouped-categories.js"></script>
+<script>
+		Highcharts.setOptions({
+				chart: {
+						borderWidth: 5,
+						borderColor: '#e8eaeb',
+						borderRadius: 0,
+						backgroundColor: '#f7f7f7'
+				},
+				title: {
+						style: {
+								'fontSize': '1em'
+						},
+						useHTML: true,
+						x: -27,
+						y: 8,
+						text: '<span class="chart-title"> Grouped categories <span class="chart-href"> <a href="http://www.blacklabel.pl/highcharts" target="_blank"> Black Label </a> </span> <span class="chart-subtitle">plugin by </span></span>'
+				}
+		});
+</script>
 
 # Grouped Categories - Highcharts module
 
 Go to project page to see this module in action: [http://blacklabel.github.io/grouped_categories/](http://blacklabel.github.io/grouped_categories/)
 
-
-<div id="chart" style="height: 300px"></div>
+<div class="chart-container" id="chart"></div>
 <script>
 window.chart = new Highcharts.Chart({
     chart: {
@@ -60,7 +78,7 @@ xAxis: {
 }
 ```
 
-<div id="chart-basic" style="height: 300px"></div>
+<div class="chart-container" id="chart-basic"></div>
 <script>
 window.chart = new Highcharts.Chart({
     chart: {
@@ -119,7 +137,7 @@ xAxis: {
 }
 ```
 
-<div id="chart-more" style="height: 300px;"></div>
+<div  class="chart-container" id="chart-more"></div>
 <script>
 window.chart = new Highcharts.Chart({
   chart: {
