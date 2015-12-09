@@ -1,3 +1,4 @@
+<link rel="stylesheet" charset="utf-8" type="text/css" href="http://blacklabel.github.io/grouped_categories/css/styles.css"/>
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://blacklabel.github.io/grouped_categories/grouped-categories.js"></script>
