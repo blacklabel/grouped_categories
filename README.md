@@ -1,6 +1,6 @@
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="./grouped-categories.js"></script>
+<script src="http://blacklabel.github.io/grouped_categories/grouped-categories.js"></script>
 
 # Grouped Categories - Highcharts module
 
