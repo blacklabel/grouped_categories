@@ -20,7 +20,7 @@
 }
 
 #readme .highcharts-title {
-	left: 5px; !important
+	left: 5px !important; 
 }
 #readme .chart-title {
     background-color: #3d3d3d;
@@ -310,6 +310,9 @@
 }
 #readme * {
 	-webkit-print-color-adjust: exact;
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	box-sizing: content-box;
 }
 @media screen and (min-width:768px) {
 	#readme .chart-title {
