@@ -1,55 +1,7 @@
-<link rel="stylesheet" charset="utf-8" type="text/css" href="http://blacklabel.github.io/grouped_categories/css/styles-plugins-registry.css"/>
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-<script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="http://blacklabel.github.io/grouped_categories/grouped-categories.js"></script>
-<script>
-		Highcharts.setOptions({
-				chart: {
-						borderWidth: 5,
-						borderColor: '#e8eaeb',
-						borderRadius: 0,
-						backgroundColor: '#f7f7f7'
-				},
-				title: {
-						style: {
-								'fontSize': '1em'
-						},
-						useHTML: true,
-						x: -27,
-						y: 8,
-						text: '<span class="chart-title"> Grouped categories <span class="chart-href"> <a href="http://www.blacklabel.pl/highcharts" target="_blank"> Black Label </a> </span> <span class="chart-subtitle">plugin by </span></span>'
-				}
-		});
-</script>
 
 # Grouped Categories - Highcharts module
 
 Go to project page to see this module in action: [http://blacklabel.github.io/grouped_categories/](http://blacklabel.github.io/grouped_categories/)
-
-<div class="chart-container" id="chart"></div>
-<script>
-window.chart = new Highcharts.Chart({
-    chart: {
-        renderTo: "chart",
-        type: "column"
-    },
-    series: [{
-        data: [4, 14, 18, 5, 6, 5, 14, 15, 18]
-    }],
-    xAxis: {
-        categories: [{
-            name: "Fruit",
-            categories: ["Apple", "Banana", "Orange"]
-        }, {
-            name: "Vegetable",
-            categories: ["Carrot", "Potato", "Tomato"]
-        }, {
-            name: "Fish",
-            categories: ["Cod", "Salmon", "Tuna"]
-        }]
-    }
-});
-</script>
 
 ### Requirements
 
@@ -77,33 +29,6 @@ xAxis: {
     }]
 }
 ```
-
-<div class="chart-container" id="chart-basic"></div>
-<script>
-window.chart = new Highcharts.Chart({
-    chart: {
-        renderTo: "chart-basic",
-        type: "column"
-    },
-    series: [{
-        data: [4, 14, 18, 5, 6, 5, 14, 15, 18]
-    }],
-    xAxis: {
-        categories: [{
-            name: "Fruit",
-            categories: ["Apple", "Banana", "Orange"]
-        }, {
-            name: "Vegetable",
-            categories: ["Carrot", "Potato", "Tomato"]
-        }, {
-            name: "Fish",
-            categories: ["Cod", "Salmon", "Tuna"]
-        }]
-    }
-});
-</script>
-
-
 
 You can also define more category levels:
 
@@ -136,48 +61,6 @@ xAxis: {
     }]
 }
 ```
-
-<div  class="chart-container" id="chart-more"></div>
-<script>
-window.chart = new Highcharts.Chart({
-  chart: {
-    renderTo: "chart-more",
-    type: "column"
-  },
-  series: [{
-    data: [19, 6, 2, 1, 9, 4, 15, 2, 9, 11, 16, 18]
-  }],
-  xAxis: {
-    categories: [{
-      name: "America",
-      categories: [{
-        name: "USA",
-        categories: ["New York", "San Francisco"]
-      }, {
-        name: "Canada",
-        categories: ["Toronto", "Vancouver"]
-      }, {
-        name: "Mexico",
-        categories: ["Acapulco", "Leon"]
-      }]
-    }, {
-      name: "Europe",
-      categories: [{
-        name: "United Kingdom",
-        categories: ["London", "Liverpool"]
-      }, {
-        name: "France",
-        categories: ["Paris", "Marseille"]
-      }, {
-        name: "Germany",
-        categories: ["Berlin", "Munich"]
-      }]
-    }]
-  }
-});
-
-</script>
-
 
 For each level you can define subset of styling options. 0-level categories are based on the default Highcharts options.
 
@@ -222,13 +105,6 @@ xAxis: {
 }
 ```
 
-
-
 ### Code
 
 The latest code is available on github: [https://github.com/blacklabel/grouped_categories/](https://github.com/blacklabel/grouped_categories/)
-
-### Demo
-
-Demos are available at project's github page: [http://blacklabel.github.io/grouped_categories/](http://blacklabel.github.io/grouped_categories/)
-
