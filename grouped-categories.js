@@ -1,5 +1,5 @@
 /**
- * Grouped Categories v1.0.11 (2015-12-07)
+ * Grouped Categories v1.0.12 (2015-12-16)
  *
  * (c) 2012-2015 Black Label
  *
@@ -376,7 +376,7 @@ tickProto.addLabel = function () {
     return;
 
   // set label text - but applied after formatter #46
-  if (category.name && this.label)
+  if (this.label)
     this.label.attr('text', this.axis.labelFormatter.call({
 			axis: this.axis,
 			chart: this.axis.chart,
