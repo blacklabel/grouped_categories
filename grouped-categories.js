@@ -1,7 +1,7 @@
 /**
- * Grouped Categories v1.0.12 (2015-12-16)
+ * Grouped Categories v1.0.13 (2016-01-13)
  *
- * (c) 2012-2015 Black Label
+ * (c) 2012-2016 Black Label
  *
  * License: Creative Commons Attribution (CC)
  */
@@ -501,7 +501,7 @@ tickProto.render = function (index, old, opacity) {
     
 	if(horiz && axis.left < xy.x) {
 			addGridPart(grid, [xy.x, xy.y, xy.x, xy.y + size], tickWidth);
-	} else if(!horiz && axis.top < xy.y){
+	} else if(!horiz && axis.top <= xy.y){
 			addGridPart(grid, [xy.x, xy.y, xy.x + size, xy.y], tickWidth);
 	}
 
@@ -542,7 +542,7 @@ tickProto.render = function (index, old, opacity) {
 			if (grid) {
 				if(horiz && axis.left < maxPos.x) {
 						addGridPart(grid, [maxPos.x, size, maxPos.x, size + lvlSize], tickWidth);
-				} else if(!horiz && axis.top < maxPos.y){
+				} else if(!horiz && axis.top <= maxPos.y){
 						addGridPart(grid, [size, maxPos.y, size + lvlSize, maxPos.y], tickWidth);
 				}
 			}
