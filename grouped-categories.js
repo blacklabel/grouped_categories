@@ -1,7 +1,7 @@
 /**
- * Grouped Categories v1.0.12 (2015-12-16)
+ * Grouped Categories v1.0.13 (2016-01-13)
  *
- * (c) 2012-2015 Black Label
+ * (c) 2012-2016 Black Label
  *
  * License: Creative Commons Attribution (CC)
  */
@@ -479,6 +479,8 @@ tickProto.render = function (index, old, opacity) {
       start   = horiz ? xy.y : xy.x,
       baseLine= axis.chart.renderer.fontMetrics(axis.options.labels.style.fontSize).b,
       depth   = 1,
+	  // adjust grid lines for edges
+      reverseCrisp = ((horiz && xy.x === axis.pos + axis.len) || (!horiz && xy.y === axis.pos)) ? -1 : 0,
       gridAttrs,
       lvlSize,
       minPos,
@@ -500,9 +502,9 @@ tickProto.render = function (index, old, opacity) {
 
     
 	if(horiz && axis.left < xy.x) {
-			addGridPart(grid, [xy.x, xy.y, xy.x, xy.y + size], tickWidth);
-	} else if(!horiz && axis.top < xy.y){
-			addGridPart(grid, [xy.x, xy.y, xy.x + size, xy.y], tickWidth);
+			addGridPart(grid, [xy.x - reverseCrisp, xy.y, xy.x - reverseCrisp, xy.y + size], tickWidth);
+	} else if(!horiz && axis.top <= xy.y){
+			addGridPart(grid, [xy.x, xy.y + reverseCrisp, xy.x + size, xy.y + reverseCrisp], tickWidth);
 	}
 
   size = start + size;
@@ -527,7 +529,9 @@ tickProto.render = function (index, old, opacity) {
     maxPos  = tickPosition(tick, mathMin(group.startAt + group.leaves - 1 - fix, max));
     bBox    = group.label.getBBox(true);
     lvlSize = axis.groupSize(depth);
-    
+    // check if on the edge to adjust
+    reverseCrisp = ((horiz && maxPos.x === axis.pos + axis.len) || (!horiz && maxPos.y === axis.pos)) ? -1 : 0;
+	
     attrs = horiz ? {
       x: (minPos.x + maxPos.x) / 2 + userX,
       y: size + lvlSize / 2 + baseLine - bBox.height / 2 - 4 + userY / 2
@@ -541,9 +545,9 @@ tickProto.render = function (index, old, opacity) {
 	
 			if (grid) {
 				if(horiz && axis.left < maxPos.x) {
-						addGridPart(grid, [maxPos.x, size, maxPos.x, size + lvlSize], tickWidth);
-				} else if(!horiz && axis.top < maxPos.y){
-						addGridPart(grid, [size, maxPos.y, size + lvlSize, maxPos.y], tickWidth);
+						addGridPart(grid, [maxPos.x - reverseCrisp, size, maxPos.x - reverseCrisp, size + lvlSize], tickWidth);
+				} else if(!horiz && axis.top <= maxPos.y){
+						addGridPart(grid, [size, maxPos.y + reverseCrisp, size + lvlSize, maxPos.y + reverseCrisp], tickWidth);
 				}
 			}
     }
