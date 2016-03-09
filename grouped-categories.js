@@ -453,6 +453,7 @@ tickProto.addGroupedLabels = function (category) {
 };
 
 // set labels position & render categories grid
+var renderIteration = 0; // optimization
 tickProto.render = function (index, old, opacity) {
   _tickRender.call(this, index, old, opacity);
 
@@ -490,7 +491,7 @@ tickProto.render = function (index, old, opacity) {
 
   // render grid for "normal" categories (first-level), render left grid line only for the first category
   if (isFirst) {
-  	
+    renderIteration++;
     gridAttrs = horiz ?
       [axis.left, xy.y, axis.left, xy.y + axis.groupSize(true)] :
       axis.isXAxis ?
@@ -521,6 +522,8 @@ tickProto.render = function (index, old, opacity) {
 
 
   while (group = group.parent) {
+    if (group.iteration === renderIteration) break;
+    group.iteration = renderIteration;
   	var fix = fixOffset(group, treeCat, tick),
   			userX = group.labelOffsets.x,
   			userY = group.labelOffsets.y;
