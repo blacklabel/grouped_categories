@@ -230,7 +230,7 @@ axisProto.render = function () {
       left    = axis.left,
       right   = left + axis.width,
       bottom  = top + axis.height,
-      visible = axis.hasVisibleSeries || axis.hasData,
+      visible = axis.hasVisibleSeries || (typeof axis.hasData === "function" ? axis.hasData() : axis.hasData),
       depth   = axis.labelsDepth,
       grid    = axis.labelsGrid,
       horiz   = axis.horiz,
