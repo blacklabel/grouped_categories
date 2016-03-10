@@ -198,6 +198,16 @@ axisProto.setupGroups = function (options) {
   this.directionFactor  = [-1, 1, 1, -1][this.side];
 
   this.options.lineWidth = pick(options.lineWidth, 1);
+
+  this.groupFontHeights = [];
+  var labelOptions = this.options.labels;
+  var userAttr = labelOptions.groupedOptions;
+  var css = labelOptions.style;
+  for (var i = 0; i <= stats.depth; i++) {
+    var hasOptions = userAttr && userAttr[i-1],
+    mergedCSS = hasOptions && userAttr[i-1].style ? merge(css, userAttr[i-1].style) : css;
+    this.groupFontHeights[i] = this.chart.renderer.fontMetrics(mergedCSS.fontSize).h;
+  }
 };
 
 
@@ -477,7 +487,6 @@ tickProto.render = function (index, old, opacity) {
       factor  = axis.directionFactor,
       xy      = tickPosition(tick, tickPos),
       start   = horiz ? xy.y : xy.x,
-      baseLine= axis.chart.renderer.fontMetrics(axis.options.labels.style.fontSize).b,
       depth   = 1,
 	  // adjust grid lines for edges
       reverseCrisp = ((horiz && xy.x === axis.pos + axis.len) || (!horiz && xy.y === axis.pos)) ? -1 : 0,
@@ -534,10 +543,10 @@ tickProto.render = function (index, old, opacity) {
 	
     attrs = horiz ? {
       x: (minPos.x + maxPos.x) / 2 + userX,
-      y: size + lvlSize / 2 + baseLine - bBox.height / 2 - 4 + userY / 2
+      y: size + lvlSize / 2 + this.groupFontHeights[depth] - bBox.height / 2 - 4 + userY / 2
     } : {
 			x: size + lvlSize / 2 + userX,
-			y: (minPos.y + maxPos.y - bBox.height) / 2  + baseLine + userY
+			y: (minPos.y + maxPos.y - bBox.height) / 2  + this.groupFontHeights[depth] + userY
 		};
 
 		if(!isNaN(attrs.x) && !isNaN(attrs.y)){ 
