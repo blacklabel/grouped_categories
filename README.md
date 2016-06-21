@@ -11,6 +11,12 @@ Go to project page to see this module in action: [http://blacklabel.github.io/gr
 
 * Like any other Highcharts module (e.g. exporting), add `<script>` tag pointing to `grouped-categories.js` below Highcharts script tag.
 
+* For NPM users: 
+```
+var Highcharts = require('highcharts'),
+    HighchartsMulticolor = require('multicolor_series')(Highcharts);
+```
+
 ### Usage and demos
 
 It's quite simple and intuitive, just pass object as category:
