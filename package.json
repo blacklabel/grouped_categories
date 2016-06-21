@@ -1,6 +1,6 @@
 {
   "name": "highcharts-grouped-categories",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Highstock plugin to add grouped categories to charts.",
   "main": "grouped-categories.js",
   "repository": {
