@@ -17,6 +17,12 @@ var Highcharts = require('highcharts'),
     HighchartsMulticolor = require('multicolor_series')(Highcharts);
 ```
 
+* For BOWER users:
+
+```
+bower install highcharts-grouped-categories
+```
+
 ### Usage and demos
 
 It's quite simple and intuitive, just pass object as category:
