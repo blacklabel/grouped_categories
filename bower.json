@@ -11,7 +11,8 @@
   "main": "grouped_categories.js",
   "keywords": [
     "highcharts",
-    "multicolor"
+    "grouped",
+    "categories"
   ],
   "license": "Creative Commons Attribution (CC)",
   "ignore": [

@@ -14,7 +14,7 @@ Go to project page to see this module in action: [http://blacklabel.github.io/gr
 * For NPM users: 
 ```
 var Highcharts = require('highcharts'),
-    HighchartsMulticolor = require('multicolor_series')(Highcharts);
+    HighchartsGroupedCategories = require('grouped-categories')(Highcharts);
 ```
 
 * For BOWER users:
