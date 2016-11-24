@@ -7,7 +7,7 @@
     "Paweł Fus <pawel@blacklabel.pl>",
     "Kacper Madej <kacper@blacklabel.pl>"
   ],
-  "description": "Highstock plugin to add grouped categories to charts.",
+  "description": "Highcharts plugin to add grouped categories to charts.",
   "main": "grouped_categories.js",
   "keywords": [
     "highcharts",
