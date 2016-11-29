@@ -444,8 +444,10 @@
 				category.tick = tick;
 			}
 
-			// set level size
-			axis.groupSize(depth, tick.label.getBBox()[size]);
+			// set level size, #93
+			if (tick) {
+				axis.groupSize(depth, tick.label.getBBox()[size]);
+			}
 
 			// go up to the parent category
 			category = category.parent;
