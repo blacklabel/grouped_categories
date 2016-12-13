@@ -8,7 +8,7 @@
 }(function (HC) {
 	'use strict';
 	/**
-	 * Grouped Categories v1.1.0 (2016-06-21)
+	 * Grouped Categories v1.1.1 (2016-12-12)
 	 *
 	 * (c) 2012-2016 Black Label
 	 *
@@ -160,11 +160,12 @@
 
 	// setup required axis options
 	axisProto.setupGroups = function (options) {
-		var categories,
+		var categories = deepClone(options.categories),
 			reverseTree = [],
-			stats = {};
-		
-		categories = deepClone(options.categories);
+			stats = {},
+			labelOptions = this.options.labels,
+			userAttr = labelOptions.groupedOptions,
+			css = labelOptions.style;
 
 		// build categories tree
 		buildTree(categories, reverseTree, stats);
@@ -180,8 +181,14 @@
 		// #66: tickWidth for x axis defaults to 1, for y to 0
 		this.tickWidth = pick(options.tickWidth, this.isXAxis ? 1 : 0);
 		this.directionFactor = [-1, 1, 1, -1][this.side];
-
 		this.options.lineWidth = pick(options.lineWidth, 1);
+		// #85: align labels vertically
+		this.groupFontHeights = [];
+		for (var i = 0; i <= stats.depth; i++) {
+			var hasOptions = userAttr && userAttr[i - 1],
+				mergedCSS = hasOptions && userAttr[i - 1].style ? merge(css, userAttr[i - 1].style) : css;
+			this.groupFontHeights[i] = Math.round(this.chart.renderer.fontMetrics(mergedCSS.fontSize).b * 0.3);
+		}
 	};
 
 
@@ -437,8 +444,10 @@
 				category.tick = tick;
 			}
 
-			// set level size
-			axis.groupSize(depth, tick.label.getBBox()[size]);
+			// set level size, #93
+			if (tick) {
+				axis.groupSize(depth, tick.label.getBBox()[size]);
+			}
 
 			// go up to the parent category
 			category = category.parent;
@@ -530,7 +539,7 @@
 			
 			attrs = horiz ? {
 				x: (minPos.x + maxPos.x) / 2 + userX,
-				y: size + lvlSize / 2 + baseLine - bBox.height / 2 - 4 + userY / 2
+				y: size + axis.groupFontHeights[depth] + lvlSize / 2 + userY / 2
 			} : {
 				x: size + lvlSize / 2 + userX,
 				y: (minPos.y + maxPos.y - bBox.height) / 2 + baseLine + userY
