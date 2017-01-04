@@ -7,6 +7,7 @@
 	}
 }(function (HC) {
 	'use strict';
+	
 	/**
 	 * Grouped Categories v1.1.1 (2016-12-12)
 	 *
@@ -15,29 +16,35 @@
 	 * License: Creative Commons Attribution (CC)
 	 */
 
+	if (!window) {
+		window = HC.win; // eslint-disable-line
+	}
+
+	/**
+	 * Compatibility section to add support for legacy IE. This can be removed if
+	 * old IE support is not needed.
+	 */
+	/* eslint-disable no-extend-native */
+	if (!Array.prototype.reduce) {
+		Array.prototype.reduce = function (fn, init) {
+			var a = this,
+				i = 0,
+				acc = init;
+			if (typeof init === 'undefined') {
+				acc = a[0];
+				i = 1;
+			}
+			for (; i < a.length; ++i) {
+				acc = fn.call(null, acc, a[i], i, a);
+			}
+			return acc;
+		};
+	}
+	/* eslint-enable no-extend-native */
+	// --- End compatibility section --- //
+
 	/* jshint expr:true, boss:true */
-	var UNDEFINED = void 0,
-		mathRound = Math.round,
-		mathMin = Math.min,
-		mathMax = Math.max,
-		merge = HC.merge,
-		pick = HC.pick,
-		each = HC.each,
-		// #74, since Highcharts 4.1.10 HighchartsAdapter is only provided by the Highcharts Standalone Framework
-		inArray = (window.HighchartsAdapter && window.HighchartsAdapter.inArray) || HC.inArray,
-
-		// cache prototypes
-		axisProto = HC.Axis.prototype,
-		tickProto = HC.Tick.prototype,
-
-		// cache original methods
-		protoAxisInit = axisProto.init,
-		protoAxisRender = axisProto.render,
-		protoAxisSetCategories = axisProto.setCategories,
-		protoTickGetLabelSize = tickProto.getLabelSize,
-		protoTickAddLabel = tickProto.addLabel,
-		protoTickDestroy = tickProto.destroy,
-		protoTickRender = tickProto.render;
+	var UNDEFINED = void 0;
 
 	function deepClone(thing) {
 		return JSON.parse(JSON.stringify(thing));
@@ -47,7 +54,6 @@
 		this.userOptions = deepClone(obj);
 		this.name = obj.name || obj;
 		this.parent = parent;
-
 		return this;
 	}
 
@@ -60,19 +66,14 @@
 			cat = cat.parent;
 		}
 
-		return parts.join(', ');
+		return parts.reverse().join(' > ');
 	};
 
-	// returns sum of an array
+	// Returns sum of an array
 	function sum(arr) {
-		var l = arr.length,
-			x = 0;
-
-		while (l--) {
-			x += arr[l];
-		}
-
-		return x;
+		return arr.reduce(function (acc, cur) {
+			return acc + cur;
+		});
 	}
 
 	// Adds category leaf to array
@@ -80,7 +81,7 @@
 		out.unshift(new Category(cat, parent));
 
 		while (parent) {
-			parent.leaves = parent.leaves ? (parent.leaves + 1) : 1;
+			parent.leavesCount = parent.leavesCount ? (parent.leavesCount + 1) : 1;
 			parent = parent.parent;
 		}
 	}
@@ -105,17 +106,17 @@
 				addLeaf(out, cat, parent);
 			}
 		}
-		options.depth = mathMax(options.depth, depth);
+		options.depth = Math.max(options.depth, depth);
 	}
 
 	// Pushes part of grid to path
 	function addGridPart(path, d, width) {
 		// Based on crispLine from HC (#65)
 		if (d[0] === d[2]) {
-			d[0] = d[2] = mathRound(d[0]) - (width % 2 / 2);
+			d[0] = d[2] = Math.round(d[0]) - (width % 2 / 2);
 		}
 		if (d[1] === d[3]) {
-			d[1] = d[3] = mathRound(d[1]) + (width % 2 / 2);
+			d[1] = d[3] = Math.round(d[1]) + (width % 2 / 2);
 		}
 
 		path.push(
@@ -149,17 +150,17 @@
 	// Axis prototype
 	//
 
-	axisProto.init = function (chart, options) {
+	HC.wrap(HC.Axis.prototype, 'init', function (proceed, chart, options) {
 		// default behaviour
-		protoAxisInit.call(this, chart, options);
+		proceed.call(this, chart, options);
 
 		if (typeof options === 'object' && options.categories) {
 			this.setupGroups(options);
 		}
-	};
+	});
 
 	// setup required axis options
-	axisProto.setupGroups = function (options) {
+	HC.Axis.prototype.setupGroups = function (options) {
 		var categories = deepClone(options.categories),
 			reverseTree = [],
 			stats = {},
@@ -179,20 +180,20 @@
 		this.labelsGridPath = [];
 		this.tickLength = options.tickLength || this.tickLength || null;
 		// #66: tickWidth for x axis defaults to 1, for y to 0
-		this.tickWidth = pick(options.tickWidth, this.isXAxis ? 1 : 0);
+		this.tickWidth = HC.pick(options.tickWidth, this.isXAxis ? 1 : 0);
 		this.directionFactor = [-1, 1, 1, -1][this.side];
-		this.options.lineWidth = pick(options.lineWidth, 1);
+		this.options.lineWidth = HC.pick(options.lineWidth, 1);
 		// #85: align labels vertically
 		this.groupFontHeights = [];
 		for (var i = 0; i <= stats.depth; i++) {
 			var hasOptions = userAttr && userAttr[i - 1],
-				mergedCSS = hasOptions && userAttr[i - 1].style ? merge(css, userAttr[i - 1].style) : css;
+				mergedCSS = hasOptions && userAttr[i - 1].style ? HC.merge(css, userAttr[i - 1].style) : css;
 			this.groupFontHeights[i] = Math.round(this.chart.renderer.fontMetrics(mergedCSS.fontSize).b * 0.3);
 		}
 	};
 
 
-	axisProto.render = function () {
+	HC.wrap(HC.Axis.prototype, 'render', function (proceed) {
 		// clear grid path
 		if (this.isGrouped) {
 			this.labelsGridPath = [];
@@ -208,7 +209,7 @@
 		// use tiny number to force highcharts to hide tick
 		this.options.tickLength = this.isGrouped ? 0.001 : this.originalTickLength;
 
-		protoAxisRender.call(this);
+		proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 
 		if (!this.isGrouped) {
 			if (this.labelsGrid) {
@@ -273,16 +274,15 @@
 			visibility: visible ? 'visible' : 'hidden'
 		});
 
-
 		walk(axis.categoriesTree, 'categories', function (group) {
 			var tick = group.tick;
 
 			if (!tick) {
 				return false;
 			}
-			if (tick.startAt + tick.leaves - 1 < axis.min || tick.startAt > axis.max) {
+			if (tick.startAt + tick.leavesCount - 1 < axis.min || tick.startAt > axis.max) {
 				tick.label.hide();
-				tick.destroyed = 0;
+				tick.destroyedCount = 0;
 			} else {
 				tick.label.attr({
 					visibility: visible ? 'visible' : 'hidden'
@@ -291,9 +291,9 @@
 			return true;
 		});
 		return true;
-	};
+	});
 
-	axisProto.setCategories = function (newCategories, doRedraw) {
+	HC.wrap(HC.Axis.prototype.setCategories, function (proceed, newCategories, doRedraw) {
 		if (this.categories) {
 			this.cleanGroups();
 		}
@@ -301,11 +301,11 @@
 			categories: newCategories
 		});
 		this.categories = this.userOptions.categories = newCategories;
-		protoAxisSetCategories.call(this, this.categories, doRedraw);
-	};
+		proceed.call(this, this.categories, doRedraw);
+	});
 
 	// cleans old categories
-	axisProto.cleanGroups = function () {
+	HC.Axis.prototype.cleanGroups = function () {
 		var ticks = this.ticks,
 			n;
 
@@ -322,7 +322,7 @@
 			}
 			tick.label.destroy();
 			
-			each(tick, function (v, i) {
+			HC.each(tick, function (v, i) {
 				delete tick[i];
 			});
 			delete group.tick;
@@ -333,7 +333,7 @@
 	};
 
 	// keeps size of each categories level
-	axisProto.groupSize = function (level, position) {
+	HC.Axis.prototype.groupSize = function (level, position) {
 		var positions = this.labelsSizes,
 			direction = this.directionFactor,
 			groupedOptions = this.options.labels.groupedOptions ? this.options.labels.groupedOptions[level - 1] : false,
@@ -348,7 +348,7 @@
 		}
 
 		if (position !== UNDEFINED) {
-			positions[level] = mathMax(positions[level] || 0, position + 10 + Math.abs(userXY));
+			positions[level] = Math.max(positions[level] || 0, position + 10 + Math.abs(userXY));
 		}
 
 		if (level === true) {
@@ -365,10 +365,10 @@
 	//
 
 	// Override methods prototypes
-	tickProto.addLabel = function () {
+	HC.wrap(HC.Tick.prototype, 'addLabel', function (proceed) {
+		proceed.apply(this, Array.prototype.slice(arguments, 1));
+
 		var category;
-		
-		protoTickAddLabel.call(this);
 		
 		if (!this.axis.categories || !(category = this.axis.categories[this.pos])) {
 			return false;
@@ -390,10 +390,10 @@
 			this.addGroupedLabels(category);
 		}
 		return true;
-	};
+	});
 
 	// render ancestor label
-	tickProto.addGroupedLabels = function (category) {
+	HC.Tick.prototype.addGroupedLabels = function (category) {
 		var tick = this,
 			axis = this.axis,
 			chart = axis.chart,
@@ -418,8 +418,8 @@
 				this.value = category.name;
 				var name = options.formatter ? options.formatter.call(this, category) : category.name,
 					hasOptions = userAttr && userAttr[depth - 1],
-					mergedAttrs = hasOptions ? merge(attr, userAttr[depth - 1]) : attr,
-					mergedCSS = hasOptions && userAttr[depth - 1].style ? merge(css, userAttr[depth - 1].style) : css;
+					mergedAttrs = hasOptions ? HC.merge(attr, userAttr[depth - 1]) : attr,
+					mergedCSS = hasOptions && userAttr[depth - 1].style ? HC.merge(css, userAttr[depth - 1].style) : css;
 
 				// #63: style is passed in CSS and not as an attribute
 				delete mergedAttrs.style;
@@ -432,7 +432,7 @@
 				// tick properties
 				tick.startAt = this.pos;
 				tick.childCount = category.categories.length;
-				tick.leaves = category.leaves;
+				tick.leavesCount = category.leavesCount;
 				tick.visible = this.childCount;
 				tick.label = label;
 				tick.labelOffsets = {
@@ -463,8 +463,8 @@
 	};
 
 	// set labels position & render categories grid
-	tickProto.render = function (index, old, opacity) {
-		protoTickRender.call(this, index, old, opacity);
+	HC.wrap(HC.Tick.prototype, 'render', function (proceed) {
+		proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 
 		var treeCat = this.axis.categories[this.pos];
 
@@ -515,7 +515,7 @@
 		function fixOffset(tCat) {
 			var ret = 0;
 			if (isFirst) {
-				ret = inArray(tCat.name, tCat.parent.categories);
+				ret = tCat.parent.categories.indexOf(tCat.name);
 				ret = ret < 0 ? 0 : ret;
 				return ret;
 			}
@@ -530,8 +530,8 @@
 				userX = group.labelOffsets.x,
 				userY = group.labelOffsets.y;
 			
-			minPos = tickPosition(tick, mathMax(group.startAt - 1, min - 1));
-			maxPos = tickPosition(tick, mathMin(group.startAt + group.leaves - 1 - fix, max));
+			minPos = tickPosition(tick, Math.max(group.startAt - 1, min - 1));
+			maxPos = tickPosition(tick, Math.min(group.startAt + group.leavesCount - 1 - fix, max));
 			bBox = group.label.getBBox(true);
 			lvlSize = axis.groupSize(depth);
 			// check if on the edge to adjust
@@ -560,31 +560,30 @@
 			size += lvlSize;
 			depth++;
 		}
-	};
 
-	tickProto.destroy = function () {
+	});
+
+	HC.wrap(HC.Tick.prototype, 'destroy', function (proceed) {
 		var group = this.parent;
 
 		while (group) {
-			group.destroyed = group.destroyed ? (group.destroyed + 1) : 1;
+			group.destroyedCount = group.destroyedCount ? (group.destroyedCount + 1) : 1;
 			group = group.parent;
 		}
 
-		protoTickDestroy.call(this);
-	};
-
+		proceed.call(this);
+	});
 	// return size of the label (height for horizontal, width for vertical axes)
-	tickProto.getLabelSize = function () {
+	HC.wrap(HC.Tick.prototype, 'getLabelSize', function (proceed) {
 		if (this.axis.isGrouped === true) {
 			// #72, getBBox might need recalculating when chart is tall
-			var size = protoTickGetLabelSize.call(this) + 10,
+			var size = proceed.call(this) + 10,
 				topLabelSize = this.axis.labelsSizes[0];
 			if (topLabelSize < size) {
 				this.axis.labelsSizes[0] = size;
 			}
 			return sum(this.axis.labelsSizes);
 		}
-		return protoTickGetLabelSize.call(this);
-	};
-
+		return proceed.call(this);
+	});
 }));
