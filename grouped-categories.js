@@ -46,12 +46,8 @@
 	/* jshint expr:true, boss:true */
 	var UNDEFINED = void 0;
 
-	function deepClone(thing) {
-		return JSON.parse(JSON.stringify(thing));
-	}
-
 	function Category(obj, parent) {
-		this.userOptions = deepClone(obj);
+		this.userOptions = HC.merge(true, obj);
 		this.name = obj.name || obj;
 		this.parent = parent;
 		return this;
@@ -161,7 +157,7 @@
 
 	// setup required axis options
 	HC.Axis.prototype.setupGroups = function (options) {
-		var categories = deepClone(options.categories),
+		var categories = HC.merge(true, options.categories),
 			reverseTree = [],
 			stats = {},
 			labelOptions = this.options.labels,
