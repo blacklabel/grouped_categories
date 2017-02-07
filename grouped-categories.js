@@ -8,7 +8,7 @@
 }(function (HC) {
 	'use strict';
 	/**
-	 * Grouped Categories v1.1.1 (2016-12-12)
+	 * Grouped Categories v1.1.2 (2017-02-07)
 	 *
 	 * (c) 2012-2016 Black Label
 	 *
@@ -187,7 +187,7 @@
 		for (var i = 0; i <= stats.depth; i++) {
 			var hasOptions = userAttr && userAttr[i - 1],
 				mergedCSS = hasOptions && userAttr[i - 1].style ? merge(css, userAttr[i - 1].style) : css;
-			this.groupFontHeights[i] = Math.round(this.chart.renderer.fontMetrics(mergedCSS.fontSize).b * 0.3);
+			this.groupFontHeights[i] = Math.round(this.chart.renderer.fontMetrics(mergedCSS ? mergedCSS.fontSize : 0).b * 0.3);
 		}
 	};
 
@@ -246,9 +246,13 @@
 				// #58: use tickWidth/tickColor instead of lineWidth/lineColor:
 				strokeWidth: tickWidth, // < 4.0.3
 				'stroke-width': tickWidth, // 4.0.3+ #30
-				stroke: options.tickColor
+				stroke: options.tickColor || '' // for styled mode (tickColor === undefined)
 			})
 			.add(axis.axisGroup);
+			// for styled mode - add class
+			if (options.tickColor) {
+				grid.addClass('highcharts-axis-line');
+			}
 		}
 
 		// go through every level and draw horizontal grid line
@@ -485,7 +489,7 @@
 			tickWidth = axis.tickWidth,
 			xy = tickPosition(tick, tickPos),
 			start = horiz ? xy.y : xy.x,
-			baseLine = axis.chart.renderer.fontMetrics(axis.options.labels.style.fontSize).b,
+			baseLine = axis.chart.renderer.fontMetrics(axis.options.labels.style ? axis.options.labels.style.fontSize : 0).b,
 			depth = 1,
 			reverseCrisp = ((horiz && xy.x === axis.pos + axis.len) || (!horiz && xy.y === axis.pos)) ? -1 : 0, // adjust grid lines for edges
 			gridAttrs,
