@@ -1,5 +1,9 @@
 @import 'https://code.highcharts.com/css/highcharts.css';
 
+/* content wrapper */
+#main-content { max-width:900px; margin:0px auto; font-size: 1.3em; } 
+#main-content ul li { margin-bottom:10px; }
+
 /* Highcharts */
 
 .highcharts-title { width: calc(100% - 30px)!important; }
@@ -91,3 +95,4 @@ sup {font-size: 0.83em;vertical-align: super;line-height: 0; }
 #chart-3d .planet { fill-opacity: 1; fill: url(#gradient-0); stroke-width:0; }
 #chart-3d .magneticFieldPink { fill-opacity: 1; fill: url(#magneticFieldPink); stroke-width:0; }
 #chart-3d .magneticFieldBlue { fill-opacity: 1; fill: url(#magneticFieldBlue); stroke-width:0; }
+

@@ -250,8 +250,8 @@
 			})
 			.add(axis.axisGroup);
 			// for styled mode - add class
-			if (options.tickColor) {
-				grid.addClass('highcharts-axis-line');
+			if (!options.tickColor) {
+				grid.addClass('highcharts-tick');
 			}
 		}
 
