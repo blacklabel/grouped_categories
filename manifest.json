@@ -16,7 +16,7 @@
 		"highcharts": "2.3.5"
 	},
 	"demo": [
-		"http://jsfiddle.net/BlackLabel/TFhd7/"
+		"https://jsfiddle.net/BlackLabel/TFhd7/"
 	],
 	"description": "Plugin that allows grouped categories for Highcharts.",
 	"keywords": [
