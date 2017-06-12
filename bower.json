@@ -9,7 +9,7 @@
     "Sławomir Stypuła <slawek@blacklabel.pl>"
   ],
   "description": "Highcharts plugin to add grouped categories to charts.",
-  "main": "grouped_categories.js",
+  "main": "grouped-categories.js",
   "keywords": [
     "highcharts",
     "grouped",
