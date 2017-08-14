@@ -370,28 +370,31 @@
 
 	// Override methods prototypes
 	tickProto.addLabel = function () {
-		var category;
+		var tick = this,
+			axis = tick.axis,
+			category;
 		
-		protoTickAddLabel.call(this);
+		protoTickAddLabel.call(tick);
 		
-		if (!this.axis.categories || !(category = this.axis.categories[this.pos])) {
+		if (!axis.categories || !(category = axis.categories[tick.pos])) {
 			return false;
 		}
 		
 		// set label text - but applied after formatter #46
-		if (this.label) {
-			this.label.attr('text', this.axis.labelFormatter.call({
-				axis: this.axis,
-				chart: this.axis.chart,
-				isFirst: this.isFirst,
-				isLast: this.isLast,
-				value: category.name
+		if (tick.label) {
+			tick.label.attr('text', tick.axis.labelFormatter.call({
+				axis: axis,
+				chart: axis.chart,
+				isFirst: tick.isFirst,
+				isLast: tick.isLast,
+				value: category.name,
+				pos: tick.pos
 			}));
 		}
 		
 		// create elements for parent categories
-		if (this.axis.isGrouped && this.axis.options.labels.enabled) {
-			this.addGroupedLabels(category);
+		if (axis.isGrouped && axis.options.labels.enabled) {
+			tick.addGroupedLabels(category);
 		}
 		return true;
 	};
