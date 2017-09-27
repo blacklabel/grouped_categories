@@ -1,6 +1,6 @@
 {
 	"name": "Grouped-Categories",
-	"version": "1.0.7",
+	"version": "1.1.2",
 	"title": "Grouped Categories",
 	"author": {
 		"name": "Black Label",
@@ -16,7 +16,7 @@
 		"highcharts": "2.3.5"
 	},
 	"demo": [
-		"http://jsfiddle.net/BlackLabel/TFhd7/"
+		"https://jsfiddle.net/BlackLabel/TFhd7/"
 	],
 	"description": "Plugin that allows grouped categories for Highcharts.",
 	"keywords": [
@@ -31,6 +31,10 @@
 		},{
 			"name": "Paweł Fus",
 			"email": "pawel@blacklabel.pl",
+			"url": "http://www.blacklabel.pl"
+		},{
+			"name": "Kacper Madej",
+			"email": "kacper@blacklabel.pl",
 			"url": "http://www.blacklabel.pl"
 		}
 	],

@@ -1,0 +1,27 @@
+{
+  "name": "highcharts-grouped-categories",
+  "version": "1.1.2",
+  "homepage": "http://blacklabel.github.io/grouped_categories/",
+  "authors": [
+    "Sebastian Bochan <sebastian@blacklabel.pl>",
+    "Paweł Fus <pawel@blacklabel.pl>",
+    "Kacper Madej <kacper@blacklabel.pl>",
+    "Sławomir Stypuła <slawek@blacklabel.pl>"
+  ],
+  "description": "Highcharts plugin to add grouped categories to charts.",
+  "main": "grouped-categories.js",
+  "keywords": [
+    "highcharts",
+    "grouped",
+    "categories"
+  ],
+  "license": "Creative Commons Attribution (CC)",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ]
+}
