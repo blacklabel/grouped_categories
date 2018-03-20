@@ -11,13 +11,27 @@ Go to project page to see this module in action: [http://blacklabel.github.io/gr
 
 * Like any other Highcharts module (e.g. exporting), add `<script>` tag pointing to `grouped-categories.js` below Highcharts script tag.
 
-* For NPM users: 
+#### NPM
+
+Install the package:
+
 ```
-var Highcharts = require('highcharts'),
-    HighchartsGroupedCategories = require('grouped-categories')(Highcharts);
+npm install highcharts-grouped-categories --save
 ```
 
-* For BOWER users:
+Install the plugin into Highcharts:
+
+```
+// Using require
+var Highcharts = require('highcharts'),
+HighchartsGroupedCategories = require('grouped-categories')(Highcharts);
+	
+// ES6
+import * as GroupedCategories from 'highcharts-grouped-categories';
+GroupedCategories(Highcharts);
+```
+
+#### Bower
 
 ```
 bower install highcharts-grouped-categories
