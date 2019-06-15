@@ -43,10 +43,11 @@
 		return JSON.parse(JSON.stringify(thing));
 	}
 
-	function Category(obj, parent) {
+	function Category(obj, parent, reverseTooltipTitle) {
 		this.userOptions = deepClone(obj);
 		this.name = obj.name || obj;
 		this.parent = parent;
+		this.reverseTooltipTitle = reverseTooltipTitle;
 
 		return this;
 	}
@@ -58,6 +59,9 @@
 		while (cat) {
 			parts.push(cat.name);
 			cat = cat.parent;
+		}
+		if (this.reverseTooltipTitle) {
+			parts = parts.reverse();
 		}
 
 		return parts.join(', ');
@@ -76,8 +80,8 @@
 	}
 
 	// Adds category leaf to array
-	function addLeaf(out, cat, parent) {
-		out.unshift(new Category(cat, parent));
+	function addLeaf(out, cat, parent, reverseTooltipTitle) {
+		out.unshift(new Category(cat, parent, reverseTooltipTitle));
 
 		while (parent) {
 			parent.leaves = parent.leaves ? (parent.leaves + 1) : 1;
@@ -102,7 +106,7 @@
 				}
 				buildTree(cat.categories, out, options, cat, depth + 1);
 			} else {
-				addLeaf(out, cat, parent);
+				addLeaf(out, cat, parent, options.reverseTooltipTitle);
 			}
 		}
 		options.depth = mathMax(options.depth, depth);
@@ -164,8 +168,11 @@
 			reverseTree = [],
 			stats = {},
 			labelOptions = this.options.labels,
+			tooltipOptions = this.chart.options.tooltip,
 			userAttr = labelOptions.groupedOptions,
 			css = labelOptions.style;
+
+		stats.reverseTooltipTitle = tooltipOptions.reverseTitle || false;
 
 		// build categories tree
 		buildTree(categories, reverseTree, stats);
