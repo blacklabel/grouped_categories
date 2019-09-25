@@ -166,7 +166,6 @@
             labelOptions = this.options.labels,
             userAttr = labelOptions.groupedOptions,
             css = labelOptions.style;
-
         // build categories tree
         buildTree(categories, reverseTree, stats);
 
@@ -190,7 +189,6 @@
             this.groupFontHeights[i] = Math.round(this.chart.renderer.fontMetrics(mergedCSS ? mergedCSS.fontSize : 0).b * 0.3);
         }
     };
-
 
     axisProto.render = function () {
         // clear grid path
@@ -405,15 +403,12 @@
     //
     // Tick prototype
     //
-
     // Override methods prototypes
     tickProto.addLabel = function () {
         var tick = this,
             axis = tick.axis,
             category;
-
         protoTickAddLabel.call(tick);
-
         if (!axis.categories || !(category = axis.categories[tick.pos])) {
             return false;
         }
@@ -443,8 +438,10 @@
             axis = this.axis,
             chart = axis.chart,
             options = axis.options.labels,
-            useHTML = options.useHTML,
-            css = options.style,
+            useHTML = options.useHTML;
+        // Grouped Labels should wrap if they exceed width
+        options.style.whiteSpace = 'pre-wrap';
+        var css = options.style,
             userAttr = options.groupedOptions,
             attr = {
                 align: 'center',
@@ -455,8 +452,6 @@
             size = axis.horiz ? 'height' : 'width',
             depth = 0,
             label;
-
-
         while (tick) {
             if (depth > 0 && !category.tick) {
                 // render label element
@@ -465,7 +460,6 @@
                     hasOptions = userAttr && userAttr[depth - 1],
                     mergedAttrs = hasOptions ? merge(attr, userAttr[depth - 1]) : attr,
                     mergedCSS = hasOptions && userAttr[depth - 1].style ? merge(css, userAttr[depth - 1].style) : css;
-
                 // #63: style is passed in CSS and not as an attribute
                 delete mergedAttrs.style;
 
@@ -502,7 +496,6 @@
             } else {
                 tick = null;
             }
-
             depth++;
         }
     };
@@ -510,9 +503,7 @@
     // set labels position & render categories grid
     tickProto.render = function (index, old, opacity) {
         protoTickRender.call(this, index, old, opacity);
-
         var treeCat = this.axis.categories[this.pos];
-
         if (!this.axis.isGrouped || !treeCat || this.pos > this.axis.max) {
             return;
         }
@@ -548,7 +539,6 @@
 
             addGridPart(grid, gridAttrs, tickWidth);
         }
-
         if (horiz && axis.left < xy.x) {
             addGridPart(grid, [xy.x - reverseCrisp, xy.y, xy.x - reverseCrisp, xy.y + size], tickWidth);
         } else if (!horiz && axis.top <= xy.y) {
@@ -570,7 +560,6 @@
 
         while (group.parent) {
             group = group.parent;
-
             var fix = fixOffset(treeCat),
                 userX = group.labelOffsets.x,
                 userY = group.labelOffsets.y;
@@ -578,21 +567,26 @@
             minPos = tickPosition(tick, mathMax(group.startAt - 1, min - 1));
             maxPos = tickPosition(tick, mathMin(group.startAt + group.leaves - 1 - fix, max));
             bBox = group.label.getBBox(true);
+            var labelWidth = group.label.getBBox().width;
+            // Most space a grouped label can be allowed to fill
+            var maxSlotWidth = maxPos.x - minPos.x;
             lvlSize = axis.groupSize(depth);
             // check if on the edge to adjust
             reverseCrisp = ((horiz && maxPos.x === axis.pos + axis.len) || (!horiz && maxPos.y === axis.pos)) ? -1 : 0;
 
             attrs = horiz ? {
-                    x: (minPos.x + maxPos.x) / 2 + userX,
-                    y: size + axis.groupFontHeights[depth] + lvlSize / 2 + userY / 2
-                } : {
-                    x: size + lvlSize / 2 + userX,
-                    y: (minPos.y + maxPos.y - bBox.height) / 2 + baseLine + userY
-                };
+                x: (minPos.x + maxPos.x) / 2 + userX,
+                y: size + axis.groupFontHeights[depth] + lvlSize / 2 + userY / 2
+            } : {
+                x: size + lvlSize / 2 + userX,
+                y: (minPos.y + maxPos.y - bBox.height) / 2 + baseLine + userY
+            };
 
             if (!isNaN(attrs.x) && !isNaN(attrs.y)) {
                 group.label.attr(attrs);
-
+                var css = {};
+                css.width = maxSlotWidth;
+                group.label.css(css);
                 if (grid) {
                     if (horiz && axis.left < maxPos.x) {
                         addGridPart(grid, [maxPos.x - reverseCrisp, size, maxPos.x - reverseCrisp, size + lvlSize], tickWidth);
