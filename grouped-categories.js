@@ -439,8 +439,6 @@
             chart = axis.chart,
             options = axis.options.labels,
             useHTML = options.useHTML;
-        // Grouped Labels should wrap if they exceed width
-        options.style.whiteSpace = 'pre-wrap';
         var css = options.style,
             userAttr = options.groupedOptions,
             attr = {
@@ -567,9 +565,7 @@
             minPos = tickPosition(tick, mathMax(group.startAt - 1, min - 1));
             maxPos = tickPosition(tick, mathMin(group.startAt + group.leaves - 1 - fix, max));
             bBox = group.label.getBBox(true);
-            var labelWidth = group.label.getBBox().width;
-            // Most space a grouped label can be allowed to fill
-            var maxSlotWidth = maxPos.x - minPos.x;
+			
             lvlSize = axis.groupSize(depth);
             // check if on the edge to adjust
             reverseCrisp = ((horiz && maxPos.x === axis.pos + axis.len) || (!horiz && maxPos.y === axis.pos)) ? -1 : 0;
@@ -584,9 +580,10 @@
 
             if (!isNaN(attrs.x) && !isNaN(attrs.y)) {
                 group.label.attr(attrs);
-                var css = {};
-                css.width = maxSlotWidth;
-                group.label.css(css);
+				// Reset width on the labels to the max available width so it wraps, have to reset width to null first in order for it to actually take affect for whatever reason
+				var maxSlotWidth = maxPos.x - minPos.x;
+				group.label.css({width: null});
+                group.label.css({width: maxSlotWidth});
                 if (grid) {
                     if (horiz && axis.left < maxPos.x) {
                         addGridPart(grid, [maxPos.x - reverseCrisp, size, maxPos.x - reverseCrisp, size + lvlSize], tickWidth);
