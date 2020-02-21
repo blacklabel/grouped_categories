@@ -452,7 +452,7 @@
 			}
 
 			// set level size, #93
-			if (tick) {
+			if (tick && tick.label) {
 				axis.groupSize(depth, tick.label.getBBox()[size]);
 			}
 
