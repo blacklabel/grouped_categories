@@ -594,4 +594,10 @@
 		return protoTickGetLabelSize.call(this);
 	};
 
+	// Since datasorting is not supported by the plugin,
+	// override replaceMovedLabel method, #146.
+	(function(H) {
+		H.wrap(H.Tick.prototype, 'replaceMovedLabel', function(p) { });
+	}(Highcharts))
+	
 }));
