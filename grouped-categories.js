@@ -8,9 +8,9 @@
 }(function (HC) {
 	'use strict';
 	/**
-	 * Grouped Categories v1.1.3 (2017-03-27)
+	 * Grouped Categories v1.1.4 (2019-03-10)
 	 *
-	 * (c) 2012-2016 Black Label
+	 * (c) 2012-2020 Black Label
 	 *
 	 * License: Creative Commons Attribution (CC)
 	 */
@@ -452,7 +452,7 @@
 			}
 
 			// set level size, #93
-			if (tick) {
+			if (tick && tick.label) {
 				axis.groupSize(depth, tick.label.getBBox()[size]);
 			}
 
@@ -593,5 +593,13 @@
 		}
 		return protoTickGetLabelSize.call(this);
 	};
+	
+	// Since datasorting is not supported by the plugin,
+	// override replaceMovedLabel method, #146.
+	HC.wrap(HC.Tick.prototype, 'replaceMovedLabel', function(p) {
+		if(!this.isGrouped){
+			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+		}	
+	});
 
 }));
