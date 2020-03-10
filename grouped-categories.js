@@ -593,5 +593,13 @@
 		}
 		return protoTickGetLabelSize.call(this);
 	};
+	
+	// Since datasorting is not supported by the plugin,
+	// override replaceMovedLabel method, #146.
+	HC.wrap(HC.Tick.prototype, 'replaceMovedLabel', function(p) {
+		if(!this.isGrouped){
+			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+		}	
+	});
 
 }));
