@@ -594,10 +594,10 @@
 		return protoTickGetLabelSize.call(this);
 	};
 	
-		H.wrap(H.Tick.prototype, 'replaceMovedLabel', function(p) { 
+		H.wrap(H.Tick.prototype, 'replaceMovedLabel', function(p) {
 			if(!this.isGrouped){
 				proceed.apply(this, Array.prototype.slice.call(arguments, 1));
-		}
-
+			}	
 	}(Highcharts))
+
 }));
