@@ -8,7 +8,7 @@
 }(function (HC) {
 	'use strict';
 	/**
-	 * Grouped Categories v1.1.4 (2019-03-10)
+	 * Grouped Categories v1.1.5 (2020-03-19)
 	 *
 	 * (c) 2012-2020 Black Label
 	 *
@@ -596,7 +596,7 @@
 	
 	// Since datasorting is not supported by the plugin,
 	// override replaceMovedLabel method, #146.
-	HC.wrap(HC.Tick.prototype, 'replaceMovedLabel', function(p) {
+	HC.wrap(HC.Tick.prototype, 'replaceMovedLabel', function(proceed) {
 		if(!this.isGrouped){
 			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 		}	
