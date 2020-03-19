@@ -8,7 +8,7 @@
 }(function (HC) {
 	'use strict';
 	/**
-	 * Grouped Categories v1.1.4 (2019-03-10)
+	 * Grouped Categories v1.1.5 (2020-03-19)
 	 *
 	 * (c) 2012-2020 Black Label
 	 *
