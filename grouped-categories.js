@@ -597,7 +597,7 @@
 	// Since datasorting is not supported by the plugin,
 	// override replaceMovedLabel method, #146.
 	HC.wrap(HC.Tick.prototype, 'replaceMovedLabel', function (proceed) {
-		if (!this.isGrouped) {
+		if (!this.axis.isGrouped) {
 			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 		}
 	});
