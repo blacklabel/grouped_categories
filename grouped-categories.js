@@ -520,7 +520,7 @@
 		function fixOffset(tCat) {
 			var ret = 0;
 			if (isFirst) {
-				ret = tCat.parent.categories.indexOf(tCat.name)
+				ret = tCat.parent.categories.indexOf(tCat.name);
 				ret = ret < 0 ? 0 : ret;
 				return ret;
 			}
