@@ -8,7 +8,7 @@
 }(function (HC) {
 	'use strict';
 	/**
-	 * Grouped Categories v1.1.5 (2020-03-19)
+	 * Grouped Categories v1.1.6 (2020-06-19)
 	 *
 	 * (c) 2012-2020 Black Label
 	 *
@@ -23,8 +23,6 @@
 		merge = HC.merge,
 		pick = HC.pick,
 		each = HC.each,
-		// #74, since Highcharts 4.1.10 HighchartsAdapter is only provided by the Highcharts Standalone Framework
-		inArray = (window.HighchartsAdapter && window.HighchartsAdapter.inArray) || HC.inArray,
 
 		// cache prototypes
 		axisProto = HC.Axis.prototype,
@@ -522,7 +520,7 @@
 		function fixOffset(tCat) {
 			var ret = 0;
 			if (isFirst) {
-				ret = inArray(tCat.name, tCat.parent.categories);
+				ret = tCat.parent.categories.indexOf(tCat.name);
 				ret = ret < 0 ? 0 : ret;
 				return ret;
 			}
