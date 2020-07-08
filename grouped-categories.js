@@ -503,8 +503,10 @@
 		// render grid for "normal" categories (first-level), render left grid line only for the first category
 		if (isFirst) {
 			gridAttrs = horiz ?
-				[axis.left, xy.y, axis.left, xy.y + axis.groupSize(true)] : axis.isXAxis ?
-					[xy.x, axis.top, xy.x + axis.groupSize(true), axis.top] : [xy.x, axis.top + axis.len, xy.x + axis.groupSize(true), axis.top + axis.len];
+				[axis.left, xy.y, axis.left, xy.y + axis.groupSize(true)] : 
+					axis.isXAxis ?
+						[xy.x, axis.top, xy.x + axis.groupSize(true), axis.top] : 
+						[xy.x, axis.top + (axis.reversed ? 0 : axis.len), xy.x + axis.groupSize(true), axis.top + (axis.reversed ? 0 : axis.len)];
 
 			addGridPart(grid, gridAttrs, tickWidth);
 		}
