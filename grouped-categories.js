@@ -388,6 +388,9 @@
 				value: category.name,
 				pos: tick.pos
 			}));
+
+			//update with new text length, since textSetter removes the size caches when text changes. #137
+			tick.label.textPxLength = tick.label.getBBox().width;
 		}
 		
 		// create elements for parent categories
