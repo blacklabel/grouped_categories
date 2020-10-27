@@ -23,7 +23,6 @@
 		merge = HC.merge,
 		pick = HC.pick,
 		each = HC.each,
-		hcVersion = HC.version,
 
 		// cache prototypes
 		axisProto = HC.Axis.prototype,
@@ -142,11 +141,6 @@
 			}
 			fn(arr[l]);
 		}
-	}
-
-	//styledMode flag is set since HC version 7.0.0
-	function isStyledMode(chart) {
-		return hcVersion.split(".")[0] >= 7 && chart.styledMode;
 	}
 
 	//
@@ -443,7 +437,7 @@
 					.add(axis.labelGroup);
 
 				//css should only be set for non styledMode configuration. #167
-				if (label && !isStyledMode(chart)) {
+				if (label && !chart.styledMode) {
 					label.css(mergedCSS);
 				}
 
