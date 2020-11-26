@@ -143,6 +143,10 @@
 		}
 	}
 
+	function textPxLength(label) {
+		return Math.abs(label.rotation) === 90 ? label.getBBox().height : label.getBBox().width;
+	}
+
 	//
 	// Axis prototype
 	//
@@ -390,7 +394,7 @@
 			}));
 
 			//update with new text length, since textSetter removes the size caches when text changes. #137
-			tick.label.textPxLength = tick.label.getBBox().width;
+			tick.label.textPxLength = textPxLength(tick.label);
 		}
 		
 		// create elements for parent categories
