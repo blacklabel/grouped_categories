@@ -8,9 +8,9 @@
 }(function (HC) {
 	'use strict';
 	/**
-	 * Grouped Categories v1.1.6 (2020-06-19)
+	 * Grouped Categories v1.1.7 (2021-03-03)
 	 *
-	 * (c) 2012-2020 Black Label
+	 * (c) 2012-2021 Black Label
 	 *
 	 * License: Creative Commons Attribution (CC)
 	 */
@@ -389,7 +389,7 @@
 				pos: tick.pos
 			}));
 
-			//update with new text length, since textSetter removes the size caches when text changes. #137
+			// update with new text length, since textSetter removes the size caches when text changes. #137
 			tick.label.textPxLength = tick.label.getBBox().width;
 		}
 		
@@ -436,7 +436,7 @@
 					.attr(mergedAttrs)
 					.add(axis.labelGroup);
 
-				//css should only be set for non styledMode configuration. #167
+				// css should only be set for non styledMode configuration. #167
 				if (label && !chart.styledMode) {
 					label.css(mergedCSS);
 				}
