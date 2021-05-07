@@ -8,7 +8,7 @@
 }(function (HC) {
 	'use strict';
 	/**
-	 * Grouped Categories v1.2.0 (2021-05-06)
+	 * Grouped Categories v1.2.0 (2021-05-10)
 	 *
 	 * (c) 2012-2021 Black Label
 	 *
@@ -396,7 +396,7 @@
 				return axis.defaultLabelFormatter.call(ctx, ctx);
 			};
 
-			tick.label.attr('text', formatter.call({
+			tick.label.attr('text', formatter({
 				axis: axis,
 				chart: axis.chart,
 				isFirst: tick.isFirst,
