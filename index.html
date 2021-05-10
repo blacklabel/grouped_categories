@@ -4,20 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   
-<link rel="stylesheet" charset="utf-8" type="text/css" href="css/styles.css"/>
+<link rel="stylesheet" charset="utf-8" type="text/css" href="./css/styles.css"/>
 	
 <title>Grouped Categories - Highcharts module</title>
 
-</head>
-<body>
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-
-
-<script src="http://code.highcharts.com/highcharts.js"></script>
-
-
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="https://code.highcharts.com/js/highcharts.js"></script>
 <script src="./grouped-categories.js"></script>
 
+</head>
+<body>
+<div id="main-content">
 
 <script>
 		Highcharts.setOptions({
@@ -32,16 +29,16 @@
 								'fontSize': '1em'
 						},
 						useHTML: true,
-						x: -27,
+						x: -10,
 						y: 8,
-						text: '<span class="chart-title"> Grouped categories <span class="chart-href"> <a href="http://www.blacklabel.pl/highcharts" target="_blank"> Black Label </a> </span> <span class="chart-subtitle">plugin by </span></span>'
+						text: '<span class="chart-title"> Grouped categories <span class="chart-href"> <a href="https://www.blacklabel.pl" target="_blank"> Black Label </a> </span> <span class="chart-subtitle">plugin by </span></span>'
 				}
 		});
 </script>		
 
 <h1>Grouped Categories - Highcharts module</h1>
 
-<p>Go to project page to see this module in action: <a href="http://blacklabel.github.io/grouped_categories/">http://blacklabel.github.io/grouped_categories/</a></p>
+<p>Go to project page to see this module in action: <a href="https://blacklabel.github.io/grouped_categories/">https://blacklabel.github.io/grouped_categories/</a></p>
 
 <div class="chart-container" id="chart"></div>
 
@@ -82,6 +79,11 @@ window.chart = new Highcharts.Chart({
 
 <ul>
 <li>Like any other Highcharts module (e.g. exporting), add <code>&lt;script&gt;</code> tag pointing to <code>grouped-categories.js</code> below Highcharts script tag.</li>
+
+<li>For NPM users:
+<pre><code>var Highcharts = require('highcharts'),
+    require('grouped-categories')(Highcharts);
+</code></pre></li>
 </ul>
 
 
@@ -254,6 +256,6 @@ xAxis: {
 
 <h3>Demo</h3>
 
-<p>Demos are available at project's github page: <a href="http://blacklabel.github.io/grouped_categories/">http://blacklabel.github.io/grouped_categories/</a></p>
+<p>Demos are available at project's github page: <a href="https://blacklabel.github.io/grouped_categories/">https://blacklabel.github.io/grouped_categories/</a></p>
 </body>
 </html>
