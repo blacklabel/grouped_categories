@@ -1,4 +1,4 @@
-/* global Highcharts module window:true */
+/* global Highcharts module */
 (function (factory) {
 	if (typeof module === 'object' && module.exports) {
 		module.exports = factory;
@@ -8,7 +8,7 @@
 }(function (HC) {
 	'use strict';
 	/**
-	 * Grouped Categories v1.1.7 (2021-03-03)
+	 * Grouped Categories v1.2.0 (2021-05-10)
 	 *
 	 * (c) 2012-2021 Black Label
 	 *
@@ -370,7 +370,12 @@
 	tickProto.addLabel = function () {
 		var tick = this,
 			axis = tick.axis,
-			category;
+			labelOptions = pick(
+				tick.options && tick.options.labels,
+				axis.options.labels
+			),
+			category,
+			formatter;
 		
 		protoTickAddLabel.call(tick);
 		
@@ -380,7 +385,18 @@
 		
 		// set label text - but applied after formatter #46
 		if (tick.label) {
-			tick.label.attr('text', tick.axis.labelFormatter.call({
+			formatter = function (ctx) {
+				if (labelOptions.formatter) {
+					return labelOptions.formatter.call(ctx, ctx);
+				}
+				if (labelOptions.format) {
+					ctx.text = axis.defaultLabelFormatter.call(ctx);
+					return HC.format(labelOptions.format, ctx, axis.chart);
+				}
+				return axis.defaultLabelFormatter.call(ctx, ctx);
+			};
+
+			tick.label.attr('text', formatter({
 				axis: axis,
 				chart: axis.chart,
 				isFirst: tick.isFirst,
