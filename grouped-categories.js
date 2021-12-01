@@ -414,7 +414,7 @@
         }
 
         // set label text - but applied after formatter #46
-        if (tick.label) {
+        if (tick.label && tick.axis.labelFormatter) {
             tick.label.attr('text', tick.axis.labelFormatter.call({
                 axis: axis,
                 chart: axis.chart,
