@@ -253,17 +253,57 @@
 			}
 		}
 
+        //Generate an array that contains the lengths of the category sets closest to the axis
+        var baseCategoryLengths = [];
+        var drill = function(categories, curDepth, targetDepth){
+            if(curDepth == targetDepth)
+                return baseCategoryLengths.push(categories.length);
+            else
+                for(var j=0; j < categories.length; j++){
+                    drill(categories[j].categories, curDepth+1, targetDepth);
+                }
+        };
+        drill(axis.categoriesTree, 0, depth);
+        //We increment through the grid array by <number of levels> * <amount of array indexes to define a point>(it takes 6 indexes in the array to define a line)
+        var arrayIncrement = (depth+1)*6;
+        //The Y position of the 'base' of the axis (X pos if on Y axis, Y pos if on X axis)
+        var axisBaseYCoord = (horiz) ? d[2] : d[1];
+        //We target the X pos if on Y axis, we target the Y pos if on X axis)
+        var targetCoord = (horiz) ? 3 : 4;
+        //We check every 6th grid index because 6 indexes = 1 point
+        var curCategoryPos = 0;
+        var targetLine = baseCategoryLengths[curCategoryPos++]*arrayIncrement;
+        for(var j=11; j < d.length; j+=6){
+            //If the cur. position matches the target line we want to keep
+            if((j+1)%(targetLine) == 0){
+                targetLine += baseCategoryLengths[curCategoryPos++]*arrayIncrement;
+                //We modify the current lines start position to be the grids base (covers the gap left by deleting all the 1st level lines)
+                d[j-targetCoord] = axisBaseYCoord;
+                //We skip the next grid line, since it's an extension of the current grid line
+                j+=6;
+                continue;
+            }
+            //Set line start position to 0
+            d[j-3] = 0;
+            d[j-4] = 0;
+
+            //Set line end position to 0
+            d[j] = 0;
+            d[j-1] = 0;
+
+        }
+
 		// go through every level and draw horizontal grid line
-		while (i <= depth) {
-			offset += axis.groupSize(i);
+		// while (i <= depth) {
+		// 	offset += axis.groupSize(i);
 
-			part = horiz ?
-				[left, offset, right, offset] :
-				[offset, top, offset, bottom];
+		// 	part = horiz ?
+		// 		[left, offset, right, offset] :
+		// 		[offset, top, offset, bottom];
 
-			addGridPart(d, part, tickWidth);
-			i++;
-		}
+		// 	addGridPart(d, part, tickWidth);
+		// 	i++;
+		// }
 
 		// draw grid path
 		grid.attr({
