@@ -494,7 +494,7 @@
 	tickProto.render = function (index, old, opacity) {
 		protoTickRender.call(this, index, old, opacity);
 
-		var treeCat = this.axis.categories[this.pos];
+		var treeCat = this.axis.categories && this.axis.categories[this.pos];
 
 		if (!this.axis.isGrouped || !treeCat || this.pos > this.axis.max) {
 			return;
