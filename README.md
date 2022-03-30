@@ -126,12 +126,12 @@ The latest code is available on github: [https://github.com/blacklabel/grouped_c
 
 We forked from the upstream repository to add our own customizations.
 Follow these steps to merge the upstream changes into our repo
-1.  Branch off from master
+1. Branch off from master
     1.  git checkout -b branch_name
-2.  Pull in the upstream changes on the master branch
+2. Pull in the upstream changes on the master branch
     1.  git pull https://github.com/blacklabel/grouped_categories.git master
-3.  Fixed merged conflicts, should be safe to take incoming changes
-4.  Reapply our own customizations
+3. Fixed merged conflicts, should be safe to take incoming changes
+4. Reapply our own customizations
     1.  grouped-categories.js - add the code block below before the while (i <= depth) loop, and then comment out the while loop
     ```javascript
         //Generate an array that contains the lengths of the category sets closest to the axis
@@ -174,17 +174,19 @@ Follow these steps to merge the upstream changes into our repo
 
         }
 
-		// go through every level and draw horizontal grid line
-		// while (i <= depth) {
-		// 	offset += axis.groupSize(i);
+        // go through every level and draw horizontal grid line
+        // while (i <= depth) {
+        // 	offset += axis.groupSize(i);
 
-		// 	part = horiz ?
-		// 		[left, offset, right, offset] :
-		// 		[offset, top, offset, bottom];
+        // 	part = horiz ?
+        // 		[left, offset, right, offset] :
+        // 		[offset, top, offset, bottom];
 
-		// 	addGridPart(d, part, tickWidth);
-		// 	i++;
-		// }
+        // 	addGridPart(d, part, tickWidth);
+        // 	i++;
+        // }
 
     ```
-   
+    2. In the `tickProto.addLabel = function () {` someone added an extra width recalculation to fix 
+    auto rotation, but for our version of highcharts (9.2.2) it instead breaks auto rotation entirely. The code is
+    specifically from https://github.com/blacklabel/grouped_categories/pull/166, but should be commented out in ours.
