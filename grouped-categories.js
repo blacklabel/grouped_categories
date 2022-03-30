@@ -446,7 +446,8 @@
 			}));
 
 			// update with new text length, since textSetter removes the size caches when text changes. #137
-			tick.label.textPxLength = tick.label.getBBox().width;
+			// Kody: Comes from https://github.com/blacklabel/grouped_categories/pull/166, but appears to actually be the cause of all of our rotation breaking, so I disabled it.
+			// tick.label.textPxLength = tick.label.getBBox().width;
 		}
 		
 		// create elements for parent categories
