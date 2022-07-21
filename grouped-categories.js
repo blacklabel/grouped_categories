@@ -93,7 +93,7 @@
 
 		while (len--) {
 			cat = cats[len];
-			
+
 			if (cat.categories) {
 				if (parent) {
 					cat.parent = parent;
@@ -109,19 +109,10 @@
 	// Pushes part of grid to path
 	function addGridPart(path, d, width) {
 		// Based on crispLine from HC (#65)
-		if (d[0] === d[2]) {
-			d[0] = d[2] = mathRound(d[0]) - (width % 2 / 2);
-		}
-		if (d[1] === d[3]) {
-			d[1] = d[3] = mathRound(d[1]) + (width % 2 / 2);
-		}
+		d[0] = mathRound(d[0]) - (width % 2 / 2);
+		d[1] = mathRound(d[1]) + (width % 2 / 2);
 
-		path.push(
-			'M',
-			d[0], d[1],
-			'L',
-			d[2], d[3]
-		);
+		path.push('M', d[0], d[1], 'V', d[2]);
 	}
 
 	// Returns tick position
@@ -141,6 +132,19 @@
 			}
 			fn(arr[l]);
 		}
+	}
+
+	function fixOffset(tCat, isFirst) {
+		var ret = 0;
+
+		if (isFirst) {
+			ret = tCat.parent.categories.indexOf(tCat.name);
+			ret = ret < 0 ? 0 : ret;
+			
+			return ret;
+		}
+
+		return ret;
 	}
 
 	//
@@ -219,19 +223,11 @@
 
 		var axis = this,
 			options = axis.options,
-			top = axis.top,
-			left = axis.left,
-			right = left + axis.width,
-			bottom = top + axis.height,
 			visible = axis.hasVisibleSeries || axis.hasData,
 			depth = axis.labelsDepth,
 			grid = axis.labelsGrid,
-			horiz = axis.horiz,
 			d = axis.labelsGridPath,
-			i = options.drawHorizontalBorders === false ? (depth + 1) : 0,
-			offset = axis.opposite ? (horiz ? top : right) : (horiz ? bottom : left),
-			tickWidth = axis.tickWidth,
-			part;
+			tickWidth = axis.tickWidth;
 
 		if (axis.userTickLength) {
 			depth -= 1;
@@ -251,18 +247,6 @@
 			if (!options.tickColor) {
 				grid.addClass('highcharts-tick');
 			}
-		}
-
-		// go through every level and draw horizontal grid line
-		while (i <= depth) {
-			offset += axis.groupSize(i);
-
-			part = horiz ?
-				[left, offset, right, offset] :
-				[offset, top, offset, bottom];
-
-			addGridPart(d, part, tickWidth);
-			i++;
 		}
 
 		// draw grid path
@@ -420,6 +404,7 @@
 	tickProto.addGroupedLabels = function (category) {
 		var tick = this,
 			axis = this.axis,
+			isFirst = tick.isFirst,
 			chart = axis.chart,
 			options = axis.options.labels,
 			useHTML = options.useHTML,
@@ -431,7 +416,7 @@
 				x: 0,
 				y: 0
 			},
-			size = axis.horiz ? 'height' : 'width',
+			size = 'height',
 			depth = 0,
 			label;
 
@@ -441,9 +426,17 @@
 				// render label element
 				this.value = category.name;
 				var name = options.formatter ? options.formatter.call(this, category) : category.name,
+					treeCat = axis.categories && axis.categories[this.pos],
+					fix = treeCat ? fixOffset(treeCat, isFirst) : 0,
+					minPos = tickPosition(this, mathMax(this.pos - 1, axis.min - 1)),
+					maxPos = tickPosition(this, mathMin(this.pos + category.leaves - 1 - fix, axis.max)),
+					mergedCssWithWidth = merge(css, {width: maxPos.x - minPos.x - 20 + 'px'}),
+
 					hasOptions = userAttr && userAttr[depth - 1],
 					mergedAttrs = hasOptions ? merge(attr, userAttr[depth - 1]) : attr,
-					mergedCSS = hasOptions && userAttr[depth - 1].style ? merge(css, userAttr[depth - 1].style) : css;
+					mergedCSS = hasOptions && userAttr[depth - 1].style
+						? merge(mergedCssWithWidth, userAttr[depth - 1].style)
+						: mergedCssWithWidth;
 
 				// #63: style is passed in CSS and not as an attribute
 				delete mergedAttrs.style;
@@ -505,83 +498,46 @@
 			axis = tick.axis,
 			tickPos = tick.pos,
 			isFirst = tick.isFirst,
+			isLast = tick.isLast,
 			max = axis.max,
 			min = axis.min,
-			horiz = axis.horiz,
+			top = axis.top,
 			grid = axis.labelsGridPath,
 			size = axis.groupSize(0),
 			tickWidth = axis.tickWidth,
 			xy = tickPosition(tick, tickPos),
-			start = horiz ? xy.y : xy.x,
-			baseLine = axis.chart.renderer.fontMetrics(axis.options.labels.style ? axis.options.labels.style.fontSize : 0).b,
+			start = xy.y,
 			depth = 1,
-			reverseCrisp = ((horiz && xy.x === axis.pos + axis.len) || (!horiz && xy.y === axis.pos)) ? -1 : 0, // adjust grid lines for edges
-			gridAttrs,
+			reverseCrisp = (xy.x === axis.pos + axis.len) ? -1 : 0, // adjust grid lines for edges
 			lvlSize,
 			minPos,
 			maxPos,
-			attrs,
-			bBox;
-
-		// render grid for "normal" categories (first-level), render left grid line only for the first category
-		if (isFirst) {
-			gridAttrs = horiz ?
-				[axis.left, xy.y, axis.left, xy.y + axis.groupSize(true)] : axis.isXAxis ?
-					[xy.x, axis.top, xy.x + axis.groupSize(true), axis.top] : [xy.x, axis.top + axis.len, xy.x + axis.groupSize(true), axis.top + axis.len];
-
-			addGridPart(grid, gridAttrs, tickWidth);
-		}
-
-		if (horiz && axis.left < xy.x) {
-			addGridPart(grid, [xy.x - reverseCrisp, xy.y, xy.x - reverseCrisp, xy.y + size], tickWidth);
-		} else if (!horiz && axis.top <= xy.y) {
-			addGridPart(grid, [xy.x, xy.y + reverseCrisp, xy.x + size, xy.y + reverseCrisp], tickWidth);
-		}
+			attrs;
 
 		size = start + size;
-
-		function fixOffset(tCat) {
-			var ret = 0;
-			if (isFirst) {
-				ret = tCat.parent.categories.indexOf(tCat.name);
-				ret = ret < 0 ? 0 : ret;
-				return ret;
-			}
-			return ret;
-		}
-
 
 		while (group.parent) {
 			group = group.parent;
 			
-			var fix = fixOffset(treeCat),
-				userX = group.labelOffsets.x,
-				userY = group.labelOffsets.y;
+			var fix = fixOffset(treeCat, isFirst),
+				userX = group.labelOffsets.x;
 			
 			minPos = tickPosition(tick, mathMax(group.startAt - 1, min - 1));
 			maxPos = tickPosition(tick, mathMin(group.startAt + group.leaves - 1 - fix, max));
-			bBox = group.label.getBBox(true);
 			lvlSize = axis.groupSize(depth);
 			// check if on the edge to adjust
-			reverseCrisp = ((horiz && maxPos.x === axis.pos + axis.len) || (!horiz && maxPos.y === axis.pos)) ? -1 : 0;
+			reverseCrisp = maxPos.x === axis.pos + axis.len;
 			
-			attrs = horiz ? {
+			attrs = {
 				x: (minPos.x + maxPos.x) / 2 + userX,
-				y: size + axis.groupFontHeights[depth] + lvlSize / 2 + userY / 2
-			} : {
-				x: size + lvlSize / 2 + userX,
-				y: (minPos.y + maxPos.y - bBox.height) / 2 + baseLine + userY
+				y: top + axis.groupFontHeights[depth] - 20,
 			};
 			
 			if (!isNaN(attrs.x) && !isNaN(attrs.y)) {
 				group.label.attr(attrs);
 
-				if (grid) {
-					if (horiz && axis.left < maxPos.x) {
-						addGridPart(grid, [maxPos.x - reverseCrisp, size, maxPos.x - reverseCrisp, size + lvlSize], tickWidth);
-					} else if (!horiz && axis.top <= maxPos.y) {
-						addGridPart(grid, [size, maxPos.y + reverseCrisp, size + lvlSize, maxPos.y + reverseCrisp], tickWidth);
-					}
+				if (grid && axis.left < maxPos.x && !isLast) {
+					addGridPart(grid, [maxPos.x - reverseCrisp, top + axis.height, top], tickWidth);
 				}
 			}
 
