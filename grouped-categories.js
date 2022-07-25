@@ -37,6 +37,9 @@
 		protoTickDestroy = tickProto.destroy,
 		protoTickRender = tickProto.render;
 
+	     // UIHN-21845
+	     var maxDataLabelWidth = 0;
+
 	function deepClone(thing) {
 		return JSON.parse(JSON.stringify(thing));
 	}
@@ -447,7 +450,11 @@
 
 			// update with new text length, since textSetter removes the size caches when text changes. #137
 			// Kody: Comes from https://github.com/blacklabel/grouped_categories/pull/166, but appears to actually be the cause of all of our rotation breaking, so I disabled it.
-			// tick.label.textPxLength = tick.label.getBBox().width;
+			// Mitch: 7/25/2022 UIHN-21845 - after being disabled, it seems rotation broke on grouped cats (but fixed highcharts without grouped cats)
+			// I tried to keep track of the longest and set the width to that and it seems to fix both
+			if (tick.label.getBBox().width > maxDataLabelWidth) {
+				maxDataLabelWidth = tick.label.getBBox().width;
+			}
 		}
 		
 		// create elements for parent categories
@@ -616,6 +623,13 @@
 			
 			if (!isNaN(attrs.x) && !isNaN(attrs.y)) {
 				group.label.attr(attrs);
+
+				// UIHN-21845
+				// Reset width on the labels to the max available width so it wraps, have to reset width to null first in order for it to actually take affect for whatever reason
+				var maxSlotWidth = maxPos.x - minPos.x;
+				group.label.css({width: null});
+				group.label.css({width: maxSlotWidth});
+
 
 				if (grid) {
 					if (horiz && axis.left < maxPos.x) {
