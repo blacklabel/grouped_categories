@@ -455,6 +455,7 @@
 			if (tick.label.getBBox().width > maxDataLabelWidth) {
 				maxDataLabelWidth = tick.label.getBBox().width;
 			}
+			tick.label.textPxLength = maxDataLabelWidth;
 		}
 		
 		// create elements for parent categories
