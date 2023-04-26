@@ -1,10 +1,10 @@
 /* global Highcharts module */
 (function (factory) {
-    if (typeof module === 'object' && module.exports) {
-        module.exports = factory;
-    } else {
-        factory(Highcharts);
-    }
+	if (typeof module === 'object' && module.exports) {
+		module.exports = factory;
+	} else {
+		factory(Highcharts);
+	}
 }(function (HC) {
 	'use strict';
 	/**
@@ -36,9 +36,6 @@
 		protoTickAddLabel = tickProto.addLabel,
 		protoTickDestroy = tickProto.destroy,
 		protoTickRender = tickProto.render;
-
-	     // UIHN-21845
-	     var maxDataLabelWidth = 0;
 
 	function deepClone(thing) {
 		return JSON.parse(JSON.stringify(thing));
@@ -96,7 +93,7 @@
 
 		while (len--) {
 			cat = cats[len];
-			
+
 			if (cat.categories) {
 				if (parent) {
 					cat.parent = parent;
@@ -243,58 +240,58 @@
 		// render grid path for the first time
 		if (!grid) {
 			grid = axis.labelsGrid = axis.chart.renderer.path()
-			.attr({
-				// #58: use tickWidth/tickColor instead of lineWidth/lineColor:
-				strokeWidth: tickWidth, // < 4.0.3
-				'stroke-width': tickWidth, // 4.0.3+ #30
-				stroke: options.tickColor || '' // for styled mode (tickColor === undefined)
-			})
-			.add(axis.axisGroup);
+				.attr({
+					// #58: use tickWidth/tickColor instead of lineWidth/lineColor:
+					strokeWidth: tickWidth, // < 4.0.3
+					'stroke-width': tickWidth, // 4.0.3+ #30
+					stroke: options.tickColor || '' // for styled mode (tickColor === undefined)
+				})
+				.add(axis.axisGroup);
 			// for styled mode - add class
 			if (!options.tickColor) {
 				grid.addClass('highcharts-tick');
 			}
 		}
 
-        //Generate an array that contains the lengths of the category sets closest to the axis
-        var baseCategoryLengths = [];
-        var drill = function(categories, curDepth, targetDepth){
-            if(curDepth == targetDepth)
-                return baseCategoryLengths.push(categories.length);
-            else
-                for(var j=0; j < categories.length; j++){
-                    drill(categories[j].categories, curDepth+1, targetDepth);
-                }
-        };
-        drill(axis.categoriesTree, 0, depth);
-        //We increment through the grid array by <number of levels> * <amount of array indexes to define a point>(it takes 6 indexes in the array to define a line)
-        var arrayIncrement = (depth+1)*6;
-        //The Y position of the 'base' of the axis (X pos if on Y axis, Y pos if on X axis)
-        var axisBaseYCoord = (horiz) ? d[2] : d[1];
-        //We target the X pos if on Y axis, we target the Y pos if on X axis)
-        var targetCoord = (horiz) ? 3 : 4;
-        //We check every 6th grid index because 6 indexes = 1 point
-        var curCategoryPos = 0;
-        var targetLine = baseCategoryLengths[curCategoryPos++]*arrayIncrement;
-        for(var j=11; j < d.length; j+=6){
-            //If the cur. position matches the target line we want to keep
-            if((j+1)%(targetLine) == 0){
-                targetLine += baseCategoryLengths[curCategoryPos++]*arrayIncrement;
-                //We modify the current lines start position to be the grids base (covers the gap left by deleting all the 1st level lines)
-                d[j-targetCoord] = axisBaseYCoord;
-                //We skip the next grid line, since it's an extension of the current grid line
-                j+=6;
-                continue;
-            }
-            //Set line start position to 0
-            d[j-3] = 0;
-            d[j-4] = 0;
+		//Generate an array that contains the lengths of the category sets closest to the axis
+		var baseCategoryLengths = [];
+		var drill = function(categories, curDepth, targetDepth){
+			if(curDepth == targetDepth)
+				return baseCategoryLengths.push(categories.length);
+			else
+				for(var j=0; j < categories.length; j++){
+					drill(categories[j].categories, curDepth+1, targetDepth);
+				}
+		};
+		drill(axis.categoriesTree, 0, depth);
+		//We increment through the grid array by <number of levels> * <amount of array indexes to define a point>(it takes 6 indexes in the array to define a line)
+		var arrayIncrement = (depth+1)*6;
+		//The Y position of the 'base' of the axis (X pos if on Y axis, Y pos if on X axis)
+		var axisBaseYCoord = (horiz) ? d[2] : d[1];
+		//We target the X pos if on Y axis, we target the Y pos if on X axis)
+		var targetCoord = (horiz) ? 3 : 4;
+		//We check every 6th grid index because 6 indexes = 1 point
+		var curCategoryPos = 0;
+		var targetLine = baseCategoryLengths[curCategoryPos++]*arrayIncrement;
+		for(var j=11; j < d.length; j+=6){
+			//If the cur. position matches the target line we want to keep
+			if((j+1)%(targetLine) == 0){
+				targetLine += baseCategoryLengths[curCategoryPos++]*arrayIncrement;
+				//We modify the current lines start position to be the grids base (covers the gap left by deleting all the 1st level lines)
+				d[j-targetCoord] = axisBaseYCoord;
+				//We skip the next grid line, since it's an extension of the current grid line
+				j+=6;
+				continue;
+			}
+			//Set line start position to 0
+			d[j-3] = 0;
+			d[j-4] = 0;
 
-            //Set line end position to 0
-            d[j] = 0;
-            d[j-1] = 0;
+			//Set line end position to 0
+			d[j] = 0;
+			d[j-1] = 0;
 
-        }
+		}
 
 		// go through every level and draw horizontal grid line
 		// while (i <= depth) {
@@ -337,7 +334,6 @@
 		});
 		return true;
 	};
-
 	axisProto.setCategories = function (newCategories, doRedraw) {
 		if (this.categories) {
 			this.cleanGroups();
@@ -361,17 +357,17 @@
 		}
 		walk(this.categoriesTree, 'categories', function (group) {
 			var tick = group.tick;
-			
+
 			if (!tick) {
 				return false;
 			}
 			tick.label.destroy();
-			
+
 			each(tick, function (v, i) {
 				delete tick[i];
 			});
 			delete group.tick;
-			
+
 			return true;
 		});
 		this.labelsGrid = null;
@@ -393,7 +389,10 @@
 		}
 
 		if (position !== UNDEFINED) {
-			positions[level] = mathMax(positions[level] || 0, position + 10 + Math.abs(userXY));
+			// UIHN-26461, this previous logic didn't allow the axis to ever shrink, so swapping between rotated/not rotated labels after the chart resized
+			// resulted in the x axis label staying too large
+			// positions[level] = mathMax(positions[level] || 0, position + 10 + Math.abs(userXY));
+			positions[level] = position + 10 + Math.abs(userXY);
 		}
 
 		if (level === true) {
@@ -419,13 +418,13 @@
 			),
 			category,
 			formatter;
-		
+
 		protoTickAddLabel.call(tick);
-		
+
 		if (!axis.categories || !(category = axis.categories[tick.pos])) {
 			return false;
 		}
-		
+
 		// set label text - but applied after formatter #46
 		if (tick.label) {
 			formatter = function (ctx) {
@@ -449,15 +448,16 @@
 			}));
 
 			// update with new text length, since textSetter removes the size caches when text changes. #137
-			// Kody: Comes from https://github.com/blacklabel/grouped_categories/pull/166, but appears to actually be the cause of all of our rotation breaking, so I disabled it.
-			// Mitch: 7/25/2022 UIHN-21845 - after being disabled, it seems rotation broke on grouped cats (but fixed highcharts without grouped cats)
-			// I tried to keep track of the longest and set the width to that and it seems to fix both
-			if (tick.label.getBBox().width > maxDataLabelWidth) {
-				maxDataLabelWidth = tick.label.getBBox().width;
+			// UIHN-21845, UIHN-26461, if this isn't set any other CSS we set related to the grouped labels seems to affect
+			// these root labels. Seems weird because highcharts sets these values themselves as well, but this plus setting
+			// width on the grouped labels seems to help make the labels not interfere with each other rotating/wrapping/ellipsis
+			var widthIsSet = typeof(tick.label.textPxLength) !== 'undefined';
+			var currentWidth = tick.label.getBBox().width;
+			if (!widthIsSet || currentWidth > tick.label.textPxLength) {
+				tick.label.textPxLength = currentWidth;
 			}
-			tick.label.textPxLength = maxDataLabelWidth;
 		}
-		
+
 		// create elements for parent categories
 		if (axis.isGrouped && axis.options.labels.enabled) {
 			tick.addGroupedLabels(category);
@@ -466,7 +466,7 @@
 	};
 
 	// render ancestor label
-	tickProto.addGroupedLabels = function (category) {
+	tickProto.addGroupedLabels = function (pCategory) {
 		var tick = this,
 			axis = this.axis,
 			chart = axis.chart,
@@ -483,8 +483,7 @@
 			size = axis.horiz ? 'height' : 'width',
 			depth = 0,
 			label;
-
-
+		var category = pCategory;
 		while (tick) {
 			if (depth > 0 && !category.tick) {
 				// render label element
@@ -493,7 +492,6 @@
 					hasOptions = userAttr && userAttr[depth - 1],
 					mergedAttrs = hasOptions ? merge(attr, userAttr[depth - 1]) : attr,
 					mergedCSS = hasOptions && userAttr[depth - 1].style ? merge(css, userAttr[depth - 1].style) : css;
-
 				// #63: style is passed in CSS and not as an attribute
 				delete mergedAttrs.style;
 
@@ -512,15 +510,24 @@
 				tick.leaves = category.leaves;
 				tick.visible = this.childCount;
 				tick.label = label;
+				tick.axis = axis;
 				tick.labelOffsets = {
 					x: mergedAttrs.x,
 					y: mergedAttrs.y
 				};
-
 				// link tick with category
 				category.tick = tick;
 			}
-
+			// UIHN-26461, this should apply overflow handling on 2nd lvl+ groups early enough for other flow operations to size correctly
+			if (depth > 0 && axis.horiz) {
+				var fix = fixOffset(pCategory, this.isFirst);
+				var minPos = tickPosition(this, mathMax(tick.startAt - 1, axis.min - 1));
+				var maxPos = tickPosition(this, mathMin(tick.startAt + tick.leaves - 1 - fix, axis.max));
+				var maxSlotSize = axis.horiz ? maxPos.x - minPos.x : maxPos.y - minPos.y;
+				var groupedOptions = axis.options.labels.groupedOptions[depth - 1];
+				var overflowType = (groupedOptions && groupedOptions.overflowType) ? groupedOptions.overflowType : 'Auto';
+				applyOverflowType(tick.label, maxSlotSize - 10, overflowType); // - 10 magic number to ensure a bit of padding between label and grid lines
+			}
 			// set level size, #93
 			if (tick && tick.label) {
 				axis.groupSize(depth, tick.label.getBBox()[size]);
@@ -589,31 +596,20 @@
 
 		size = start + size;
 
-		function fixOffset(tCat) {
-			var ret = 0;
-			if (isFirst) {
-				ret = tCat.parent.categories.indexOf(tCat.name);
-				ret = ret < 0 ? 0 : ret;
-				return ret;
-			}
-			return ret;
-		}
-
-
 		while (group.parent) {
 			group = group.parent;
-			
-			var fix = fixOffset(treeCat),
+
+			var fix = fixOffset(treeCat, isFirst),
 				userX = group.labelOffsets.x,
 				userY = group.labelOffsets.y;
-			
+
 			minPos = tickPosition(tick, mathMax(group.startAt - 1, min - 1));
 			maxPos = tickPosition(tick, mathMin(group.startAt + group.leaves - 1 - fix, max));
 			bBox = group.label.getBBox(true);
 			lvlSize = axis.groupSize(depth);
 			// check if on the edge to adjust
 			reverseCrisp = ((horiz && maxPos.x === axis.pos + axis.len) || (!horiz && maxPos.y === axis.pos)) ? -1 : 0;
-			
+
 			attrs = horiz ? {
 				x: (minPos.x + maxPos.x) / 2 + userX,
 				y: size + axis.groupFontHeights[depth] + lvlSize / 2 + userY / 2
@@ -621,17 +617,9 @@
 				x: size + lvlSize / 2 + userX,
 				y: (minPos.y + maxPos.y - bBox.height) / 2 + baseLine + userY
 			};
-			
+
 			if (!isNaN(attrs.x) && !isNaN(attrs.y)) {
 				group.label.attr(attrs);
-
-				// UIHN-21845
-				// Reset width on the labels to the max available width so it wraps, have to reset width to null first in order for it to actually take affect for whatever reason
-				var maxSlotWidth = maxPos.x - minPos.x;
-				group.label.css({width: null});
-				group.label.css({width: maxSlotWidth});
-
-
 				if (grid) {
 					if (horiz && axis.left < maxPos.x) {
 						addGridPart(grid, [maxPos.x - reverseCrisp, size, maxPos.x - reverseCrisp, size + lvlSize], tickWidth);
@@ -645,7 +633,6 @@
 			depth++;
 		}
 	};
-
 	tickProto.destroy = function () {
 		var group = this.parent;
 
@@ -670,7 +657,71 @@
 		}
 		return protoTickGetLabelSize.call(this);
 	};
-	
+	/**
+	 * Applies properties to a label to help ensure it's not overflowing the specified width.
+	 * @param label - The label you want to apply overflow to.
+	 * @param maxWidth - The max width the label is allowed to take up.
+	 * @param overflowType - What type of overflow should be applied to the label. Valid options are 'Auto', 'Rotate', and
+	 * 'Ellipsis'. Auto will first try wrapping labels to make them fit, then try rotating, and finally apply ellipsis as a last resort.
+	 */
+	function applyOverflowType(label, maxWidth, overflowType) {
+		// UIHN-21845, UIHN-26461, this function as a whole was added to handle overflow on grouped categories better.
+		// Previously only wrapped which didn't always fix overflow issues, but now should support wrapping, rotating, and ellipsis
+
+		// Track the full (unwrapped) width of the label
+		if (typeof(label.fullWidth) === 'undefined') {
+			label.css({width: null});
+			label.fullWidth = label.getBBox().width;
+		}
+		var currentTextWidth = label.isRotated ? label.getBBox().height : label.getBBox().width; // TODO wrong
+		// Track wrapped width/height on the label if we haven't yet (only in auto mode, since other modes don't wrap)
+		if(typeof(label.wrappedWidth) === 'undefined' && overflowType === 'Auto') {
+			label.css({width: null});
+			label.css({width: maxWidth});
+			var wBbox = label.getBBox();
+			label.wrappedWidth = wBbox.width;
+			label.wrappedHeight = wBbox.height;
+		}
+		var rotate = false;
+		if (overflowType === 'Auto' || overflowType === 'Rotate') {
+			var currentWidthOverflows = currentTextWidth > maxWidth;
+			// We rotate if Auto is on and both regular width and wrapped width overflow, OR if Rotate is on and current width overflows
+			rotate = overflowType === 'Auto' ?  (currentWidthOverflows && label.wrappedWidth > maxWidth) : currentWidthOverflows;
+		}
+		label.isRotated = rotate;
+		if (rotate) {
+			label.attr({rotation: -90});
+			// Have to set width back to an actual value to "undo" any wrapping that may have happened before we rotated
+			label.css({width: null});
+			label.css({width: label.fullWidth + 10}); // +10 is a magic number otherwise last word wraps still
+			// Apply wrapping to the rotated text if the wrapped texts height fits in the available width
+			// TODO should consider another property (e.g. maxRotatedWidth) that can be used to limit how tall some rotated labels get
+			/*if (group.label.wrappedHeight < maxRotatedWidth) {
+				label.css({width: maxRotatedWidth});
+			}*/
+		} else {
+			label.attr({rotation: 0});
+			// Reset width on the labels to the max available width, so either wrapping or ellipsis can handle overflow
+			// this is required in addition to setting the textPxLength on the child labels in the addLabel function
+			var css = {width: maxWidth};
+			// delete
+			if (overflowType === 'Ellipsis' || overflowType === 'Auto' && label.wrappedWidth > maxWidth) {
+				css.textOverflow = 'ellipsis';
+			}
+			// Have to reset width to null first in order for it to actually take effect consistently
+			label.css({width: null});
+			label.css(css);
+		}
+	}
+	function fixOffset(tCat, isFirst) {
+		var ret = 0;
+		if (isFirst) {
+			ret = tCat.parent.categories.indexOf(tCat.name);
+			ret = ret < 0 ? 0 : ret;
+			return ret;
+		}
+		return ret;
+	}
 	// Since datasorting is not supported by the plugin,
 	// override replaceMovedLabel method, #146.
 	HC.wrap(HC.Tick.prototype, 'replaceMovedLabel', function (proceed) {
@@ -678,5 +729,4 @@
 			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 		}
 	});
-
 }));
