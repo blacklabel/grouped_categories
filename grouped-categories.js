@@ -8,9 +8,9 @@
 }(function (HC) {
 	'use strict';
 	/**
-	 * Grouped Categories v1.3.0 (2022-03-14)
+	 * Grouped Categories v1.3.1 (2023-05-31)
 	 *
-	 * (c) 2012-2022 Black Label
+	 * (c) 2012-2023 Black Label
 	 *
 	 * License: Creative Commons Attribution (CC)
 	 */
@@ -622,5 +622,38 @@
 			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 		}
 	});
+
+	// Override `fontMetrics` function to provide compatibility with HC 11 (#200)
+	HC.SVGRenderer.prototype.fontMetrics = function (fontSize, elem) {
+		if ((this.styledMode || !/px/.test(fontSize)) &&
+			(HC.win.getComputedStyle) // old IE doesn't support it
+		) {
+			fontSize = elem && HC.SVGElement.prototype.getStyle.call(elem, 'font-size');
+		} else {
+			fontSize = fontSize ||
+				// When the elem is a DOM element (#5932)
+				(elem && elem.style && elem.style.fontSize) ||
+				// Fall back on the renderer style default
+				(this.style && this.style.fontSize);
+		}
+		// Handle different units
+		if (/px/.test(fontSize)) {
+			fontSize = HC.pInt(fontSize);
+		} else {
+			fontSize = 12;
+		}
+		// Empirical values found by comparing font size and bounding box
+		// height. Applies to the default font family.
+		// https://jsfiddle.net/highcharts/7xvn7/
+		var lineHeight = (fontSize < 24 ?
+				fontSize + 3 :
+				Math.round(fontSize * 1.2)),
+			baseline = Math.round(lineHeight * 0.8);
+		return {
+			h: lineHeight,
+			b: baseline,
+			f: fontSize
+		};
+	};
 
 }));
