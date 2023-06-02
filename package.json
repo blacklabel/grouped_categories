@@ -13,7 +13,7 @@
     "categories",
     "highcharts-addon"
   ],
-  "author": "Black Label <start@blacklabel.pl> (http://blacklabel.pl)",
+  "author": "Black Label <start@blacklabel.pl> (https://blacklabel.pl/highcharts/)",
   "license": "SEE LICENSE IN license.txt",
   "bugs": {
     "url": "https://github.com/blacklabel/grouped_categories/issues"

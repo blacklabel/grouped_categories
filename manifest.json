@@ -4,7 +4,7 @@
 	"title": "Grouped Categories",
 	"author": {
 		"name": "Black Label",
-		"url": "http://www.blacklabel.pl/"
+		"url": "https://blacklabel.pl/highcharts/"
 	},
 	"licenses": [
 		{
@@ -29,15 +29,15 @@
 		{
 			"name": "Sebastian Bochan",
 			"email": "sebastian@blacklabel.pl",
-			"url": "http://www.blacklabel.pl"
+			"url": "https://blacklabel.pl/highcharts/"
 		},{
 			"name": "Paweł Fus",
 			"email": "pawel@blacklabel.pl",
-			"url": "http://www.blacklabel.pl"
+			"url": "https://blacklabel.pl/highcharts/"
 		},{
 			"name": "Kacper Madej",
 			"email": "kacper@blacklabel.pl",
-			"url": "http://www.blacklabel.pl"
+			"url": "https://blacklabel.pl/highcharts/"
 		}
 	],
 	"homepage": "http://blacklabel.github.io/grouped_categories/",
