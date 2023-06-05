@@ -8,7 +8,7 @@
 }(function (HC) {
 	'use strict';
 	/**
-	 * Grouped Categories v1.3.1 (2023-05-31)
+	 * Grouped Categories v1.3.2 (2023-06-05)
 	 *
 	 * (c) 2012-2023 Black Label
 	 *
@@ -180,9 +180,9 @@
 	// Axis prototype
 	//
 
-	axisProto.init = function (chart, options) {
+	axisProto.init = function (chart, options, coll) {
 		// default behaviour
-		protoAxisInit.call(this, chart, options);
+		protoAxisInit.call(this, chart, options, coll);
 
 		if (typeof options === 'object' && options.categories) {
 			this.setupGroups(options);
