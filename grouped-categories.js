@@ -180,9 +180,9 @@
 	// Axis prototype
 	//
 
-	axisProto.init = function (chart, options) {
+	axisProto.init = function (chart, options, coll) {
 		// default behaviour
-		protoAxisInit.call(this, chart, options);
+		protoAxisInit.call(this, chart, options, coll);
 
 		if (typeof options === 'object' && options.categories) {
 			this.setupGroups(options);
