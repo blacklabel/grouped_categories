@@ -9,6 +9,7 @@ Go to project page to see this module in action: [http://blacklabel.github.io/gr
 * For Highcharts version `>= 9.1.0` the plugin needs to be in version `>= 1.2.0`
 * For Highcharts version `>= 10.0.0` the plugin needs to be in version `>= 1.3.0`
 * For Highcharts version `>= 11.0.0` the plugin needs to be in version `>= 1.3.1`
+* For Highcharts version `>= 11.1.0` the plugin needs to be in version `>= 1.3.2`
 
 ### Installation
 
