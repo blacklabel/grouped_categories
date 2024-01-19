@@ -412,7 +412,7 @@
 		
 		protoTickAddLabel.call(tick);
 		
-		if (!axis.categories || !(category = axis.categories[tick.pos])) {
+		if (!axis.categories || !axis.isGrouped || !(category = axis.categories[tick.pos])) {
 			return false;
 		}
 		
