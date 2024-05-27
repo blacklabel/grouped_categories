@@ -1,11 +1,5 @@
 /* global Highcharts module */
-(function (factory) {
-	if (typeof module === 'object' && module.exports) {
-		module.exports = factory;
-	} else {
-		factory(Highcharts);
-	}
-}(function (HC) {
+export default function (HC) {
 	'use strict';
 	/**
 	 * Grouped Categories v1.3.2 (2023-06-05)
@@ -294,7 +288,7 @@
 				[left, offset, right, offset] :
 				[offset, top, offset, bottom];
 
-			addGridPart(d, part, tickWidth);
+			// addGridPart(d, part, tickWidth);
 			i++;
 		}
 
@@ -412,7 +406,7 @@
 		
 		protoTickAddLabel.call(tick);
 		
-		if (!axis.categories || !(category = axis.categories[tick.pos])) {
+		if (!axis.categories || !axis.isGrouped || !(category = axis.categories[tick.pos])) {
 			return false;
 		}
 		
@@ -429,14 +423,40 @@
 				return axis.defaultLabelFormatter.call(ctx, ctx);
 			};
 
+
 			tick.label.attr('text', formatter({
 				axis: axis,
 				chart: axis.chart,
 				isFirst: tick.isFirst,
 				isLast: tick.isLast,
 				value: category.name,
-				pos: tick.pos
+				pos: tick.pos,
 			}));
+
+			const labelCount = axis.categories.length;
+			const chartWidth = axis.chart.chartWidth;
+			const availableWidth = (chartWidth / labelCount) - 30;
+			const actualLabelWidth = tick.label.getBBox().width;
+
+			function truncateText(text, maxWidth) {
+				let truncated = text;
+				const svgText = axis.chart.renderer.text(text, 0, 0).css({ visibility: 'hidden' }).add();
+				while (svgText.getBBox().width > maxWidth && truncated.length > 0) {
+						truncated = truncated.slice(0, -1);
+						svgText.attr({
+								text: truncated + '...'
+						});
+				}
+				svgText.destroy();
+				return truncated + '...';
+			}
+
+			if(actualLabelWidth > availableWidth) {
+				tick.label.attr({
+					text: truncateText(category.name, availableWidth),
+					title: category.name
+				});
+			}
 
 			// update with new text length, since textSetter removes the size caches when text changes. #137
 			tick.label.textPxLength = tick.label.getBBox().width;
@@ -487,8 +507,21 @@
 
 				// css should only be set for non styledMode configuration. #167
 				if (label && !chart.styledMode) {
-					label.css(mergedCSS);
+					const labelCount = this.axis.categories.length;
+					const chartWidth = chart.chartWidth;
+					const availableWidth = (chartWidth / labelCount) - 40;
+					const leaves = category.leaves; // todo robin check 3 depth case
+					const maxLabelWidth = leaves * (availableWidth);
+					const actualLabelWidth = label.getBBox().width;
+
+					const ellipsisCss = actualLabelWidth > maxLabelWidth ? { width: `${maxLabelWidth}px` } : {};
+					label.css({
+						...mergedCSS,
+						lineHeight: 1,
+						...ellipsisCss
+					});
 				}
+
 
 				// tick properties
 				tick.startAt = this.pos;
@@ -557,18 +590,20 @@
 			bBox;
 
 		// render grid for "normal" categories (first-level), render left grid line only for the first category
-		if (isFirst) {
-			gridAttrs = horiz ?
-				[axis.left, xy.y, axis.left, xy.y + axis.groupSize(true)] : axis.isXAxis ?
-					[xy.x, axis.top, xy.x + axis.groupSize(true), axis.top] : [xy.x, axis.top + axis.len, xy.x + axis.groupSize(true), axis.top + axis.len];
+    if (isFirst) {
+      gridAttrs = horiz
+        ? [axis.left, start + size, axis.left, xy.y + axis.groupSize(true)]
+        : axis.isXAxis
+        ? [xy.x, axis.top, xy.x + axis.groupSize(true), axis.top]
+        : [xy.x, axis.top + axis.len, xy.x + axis.groupSize(true), axis.top + axis.len];
 
-			addGridPart(grid, gridAttrs, tickWidth);
-		}
+      addGridPart(grid, gridAttrs, tickWidth);
+    }
 
 		if (horiz && axis.left < xy.x) {
-			addGridPart(grid, [xy.x - reverseCrisp, xy.y, xy.x - reverseCrisp, xy.y + size], tickWidth);
+			// addGridPart(grid, [xy.x - reverseCrisp, xy.y, xy.x - reverseCrisp, xy.y + size], tickWidth);
 		} else if (!horiz && axis.top <= xy.y) {
-			addGridPart(grid, [xy.x, xy.y + reverseCrisp, xy.x + size, xy.y + reverseCrisp], tickWidth);
+			// addGridPart(grid, [xy.x, xy.y + reverseCrisp, xy.x + size, xy.y + reverseCrisp], tickWidth);
 		}
 
 		size = start + size;
@@ -656,4 +691,86 @@
 		}
 	});
 
-}));
+	HC.wrap(HC.Axis.prototype, 'render', function (proceed) {
+    proceed.call(this);
+
+		const axis = this;
+		const chart = axis?.chart;
+		const chartType = chart?.options?.chart?.type;
+
+		if(!axis.isXAxis || axis.isGrouped|| !['column', 'line', 'area','waterfall'].includes(chartType)) {
+			return;
+		}
+
+		// keep time in x-axis working as it is
+		if(axis?.categoriesTree?.[0]?.dimension?.t) {
+			return;
+		}
+		
+		const labelPadding = 4;
+		const tickWidth = (chart.plotWidth / axis.tickPositions.length) - labelPadding;
+		const xAxisTitle = axis.axisTitle;
+	  const titleBBox = xAxisTitle?.getBBox();
+
+		function getLabelWidth(text) {
+			const labelText = axis.chart.renderer.label(text, 0, 0).css({ visibility: 'hidden' }).add();
+			const width = labelText.getBBox().width - 20;
+			labelText.destroy();
+			
+			return width;
+		}
+
+		function checkForCollisionWithAxisTitle(tickBBox) {
+			if(!titleBBox) {
+				return false;
+			}
+
+			// Check for collision
+			if (titleBBox.x < tickBBox.x + tickBBox.width &&
+				titleBBox.x + titleBBox.width > tickBBox.x &&
+				titleBBox.y < tickBBox.y + tickBBox.height &&
+				titleBBox.y + titleBBox.height > tickBBox.y) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		Object.values(axis.ticks).forEach(function (tick) {
+			const label = tick.label;
+			if(!label) {
+				return;
+			}
+
+
+			const labelWidth = getLabelWidth(label.element?.textContent||'');
+			const originalLabelBox = label.getBBox();
+
+			if (axis.labelRotation !== 0) {
+				label.element.classList.remove('highcharts-custom-x-axis-label');
+			} else if (labelWidth > tickWidth && !checkForCollisionWithAxisTitle(originalLabelBox)) {
+				label.element.classList.add('highcharts-custom-x-axis-label');
+				
+				label.css({
+					width: tickWidth,	
+				});
+			} else {
+				if(label.element.classList.contains('highcharts-custom-x-axis-label')) {
+					label.element.classList.remove('highcharts-custom-x-axis-label');
+					label.css({
+						width: tickWidth,	
+						textAlign:'center',
+					});
+				}
+			}
+		});
+
+		const collition = false;
+		if(collition) {
+			setTimeout(()=> {
+				chart.redraw()
+			},1000)
+		}
+});
+
+};
