@@ -728,14 +728,15 @@ export default function (HC) {
 			// Check for collision
 			if (titleBBox.x < tickBBox.x + tickBBox.width &&
 				titleBBox.x + titleBBox.width > tickBBox.x &&
-				titleBBox.y < tickBBox.y + tickBBox.height &&
-				titleBBox.y + titleBBox.height > tickBBox.y) {
+				titleBBox.y < tickBBox.y + tickBBox.height + 20 &&
+				titleBBox.y + titleBBox.height + 20 > tickBBox.y) {
 				return true;
 			} else {
 				return false;
 			}
 		}
 		
+		let isCollidingWithAxisTitle = false;
 		Object.values(axis.ticks).forEach(function (tick) {
 			const label = tick.label;
 			if(!label) {
@@ -743,12 +744,13 @@ export default function (HC) {
 			}
 
 
-			const labelWidth = getLabelWidth(label.element?.textContent||'');
+			const labelWidth = getLabelWidth(label.element?.textContent || '');
 			const originalLabelBox = label.getBBox();
 
 			if (axis.labelRotation !== 0) {
 				label.element.classList.remove('highcharts-custom-x-axis-label');
-			} else if (labelWidth > tickWidth && !checkForCollisionWithAxisTitle(originalLabelBox)) {
+			} else if (labelWidth > tickWidth) {
+				isCollidingWithAxisTitle = checkForCollisionWithAxisTitle(originalLabelBox)
 				label.element.classList.add('highcharts-custom-x-axis-label');
 				
 				label.css({
@@ -765,11 +767,8 @@ export default function (HC) {
 			}
 		});
 
-		const collition = false;
-		if(collition) {
-			setTimeout(()=> {
-				chart.redraw()
-			},1000)
+		if(isCollidingWithAxisTitle) {
+			chart.redraw();
 		}
 });
 
