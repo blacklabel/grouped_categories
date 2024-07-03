@@ -1,7 +1,7 @@
 {
   "name": "highcharts-grouped-categories",
   "version": "1.3.2",
-  "description": "Highcharts plugin to add grouped categories to charts.",
+  "description": "A Highcharts plugin to add grouped categories to charts.",
   "main": "grouped-categories.js",
   "repository": {
     "type": "git",
@@ -11,9 +11,11 @@
     "highcharts",
     "grouped",
     "categories",
-    "highcharts-addon"
+    "highcharts-addon",
+    "plugin",
+    "charts"
   ],
-  "author": "Black Label <start@blacklabel.pl> (https://blacklabel.pl/highcharts/)",
+  "author": "Black Label <hello@blacklabel.net> (https://blacklabel.net/highcharts/)",
   "license": "SEE LICENSE IN license.txt",
   "bugs": {
     "url": "https://github.com/blacklabel/grouped_categories/issues"
