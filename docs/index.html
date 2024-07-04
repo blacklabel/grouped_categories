@@ -55,17 +55,27 @@
 
       <h3>Through <code>&lt;script&gt;</code> tag</h3>
       <p>Like any other Highcharts module (e.g. exporting), add tag pointing to
-        <code>grouped-categories.js</code> below Highcharts script tag.
+        <code>grouped-categories.js</code> below the Highcharts script tag.
+      </p>
+      <pre><code>&lt;script src="https://code.highcharts.com/highcharts.js"&gt;&lt;/script&gt;
+&lt;script src="https://your-link.com/your-scripts/grouped-categories.js"&gt;&lt;/script&gt;
+</code></pre>
+      <p><span class="font-bold">Please note</span> that you have to host this JavaScript file yourself. For
+        development/testing purposes, you can use the
+        <a target="_blank"
+          href="https://blacklabel.github.io/grouped_categories/grouped-categories.js">https://blacklabel.github.io/grouped_categories/grouped-categories.js</a>
+        but for production, you should host it yourself as we do not provide this file from any CDN. This file is
+        available on our
+        <a target="_blank" href="https://github.com/blacklabel/grouped_categories">GitHub repository.</a>
       </p>
 
       <h3>With npm</h3>
-      <ul>
-        <li>Install the package: </li>
-        <pre><code>npm i highcharts-grouped-categories
+      <p>Firstly, install the package: </p>
+      <pre><code>npm i highcharts-grouped-categories
 </code></pre>
 
-        <li>Apply the module in your code where you import Highcharts:
-          <pre><code>import Highcharts from 'highcharts';
+      <p>And apply the module in your code where you import Highcharts:
+      <pre><code>import Highcharts from 'highcharts';
 import GroupedCategoriesModule from 'highcharts-grouped-categories';
 
 GroupedCategoriesModule(Highcharts);
@@ -73,8 +83,7 @@ GroupedCategoriesModule(Highcharts);
 // or, if you use require
 // require('highcharts-grouped-categories')(Highcharts);
 </code></pre>
-        </li>
-      </ul>
+      </p>
     </section>
 
     <section id="usage">
