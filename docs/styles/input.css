@@ -1,0 +1,56 @@
+@import 'https://code.highcharts.com/css/highcharts.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Highcharts-related styles */
+.highcharts-title {
+  width: calc(100% - 5px) !important;
+}
+
+.highcharts-background {
+  fill: #f7f7f7;
+  stroke: #e8eaeb;
+  stroke-width: 5;
+}
+
+.highcharts-navigator-mask-outside {
+  fill-opacity: 0;
+}
+
+.highcharts-plot-line {
+  stroke-width: 10px;
+  stroke: #a4c08e;
+}
+
+.highcharts-plot-band {
+  fill: #fcffc5;
+  fill-opacity: 1;
+}
+
+.chart-title {
+  background-color: #3d3d3d;
+  color: #fff;
+  float: left;
+  font-size: 0.756em;
+  padding: 10px;
+  width: calc(100% - 1px);
+}
+
+.chart-subtitle {
+  line-height: 1.7em;
+  font-size: 0.8em;
+  padding-right: 10px;
+  @apply float-right text-indigo-400;
+}
+
+.chart-href,
+.chart-href a,
+.chart-href a:hover {
+  @apply font-bold float-right text-indigo-400 no-underline;
+}
