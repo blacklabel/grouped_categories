@@ -4,6 +4,7 @@
     "es2021": true,
     "node": true
   },
+  "plugins": ["html"],
   "extends": ["eslint:recommended", "plugin:prettier/recommended"],
   "parserOptions": {
     "ecmaVersion": 12,
