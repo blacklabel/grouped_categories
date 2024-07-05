@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+  <link rel="stylesheet" charset="utf-8" type="text/css" href="./styles/dist.css" />
+
+  <title>Highcharts Grouped Categories</title>
+
+  <script src="https://code.highcharts.com/js/highcharts.js"></script>
+  <script src="../grouped-categories.js"></script>
+</head>
+
+<body>
+  <article class="prose max-w-3xl mx-auto px-6 py-16">
+    <header>
+      <a href="https://blacklabel.net/"
+        class="tracking-wide text-violet-600 hover:text-orange-500 uppercase font-bold text-sm mb-3 block no-underline">
+        Developed by Black Label
+      </a>
+
+      <h1 class="text-3xl md:text-4xl font-bold -mb-2">Highcharts Grouped Categories</h1>
+
+      <p>A Highcharts plugin that allows you to add multi-level categories to your axes.</p>
+
+      <nav id="table-of-contents" class="mb-8">
+        <h2 class="text-2xl font-bold mb-2">Table of Contents</h2>
+        <ul class="list-none ml-0 pl-0">
+          <li><a class="text-gray-600 hover:text-violet-600" href="#requirements">Requirements</a></li>
+          <li><a class="text-gray-600 hover:text-violet-600" href="#installation">Installation</a></li>
+          <li><a class="text-gray-600 hover:text-violet-600" href="#usage">Usage and demos</a></li>
+          <li><a class="text-gray-600 hover:text-violet-600" href="#code">Code</a></li>
+          <li><a class="text-gray-600 hover:text-violet-600" href="#demo">Demo</a></li>
+        </ul>
+      </nav>
+
+    </header>
+
+    <div class="chart-container" id="chart"></div>
+
+    <section id="requirements">
+      <h2>Requirements</h2>
+      <ul>
+        <li>For Highcharts version >= 9.1.0 the plugin needs to be in version >= 1.2.0</li>
+        <li>For Highcharts version >= 10.0.0 the plugin needs to be in version >= 1.3.0</li>
+        <li>For Highcharts version >= 11.0.0 the plugin needs to be in version >= 1.3.1</li>
+        <li>For Highcharts version >= 11.1.0 the plugin needs to be in version >= 1.3.2</li>
+      </ul>
+    </section>
+
+    <section id="installation">
+      <h2>Installation</h2>
+
+      <h3>Through <code>&lt;script&gt;</code> tag</h3>
+      <p>Like any other Highcharts module (e.g. exporting), add tag pointing to
+        <code>grouped-categories.js</code> below the Highcharts script tag.
+      </p>
+      <pre><code>&lt;script src="https://code.highcharts.com/highcharts.js"&gt;&lt;/script&gt;
+&lt;script src="https://your-link.com/your-scripts/grouped-categories.js"&gt;&lt;/script&gt;
+</code></pre>
+      <p><span class="font-bold">Please note</span> that you have to host this JavaScript file yourself. For
+        development/testing purposes, you can use the
+        <a target="_blank"
+          href="https://blacklabel.github.io/grouped_categories/grouped-categories.js">https://blacklabel.github.io/grouped_categories/grouped-categories.js</a>
+        but for production, you should host it yourself as we do not provide this file from any CDN. This file is
+        available on our
+        <a target="_blank" href="https://github.com/blacklabel/grouped_categories">GitHub repository.</a>
+      </p>
+
+      <h3>With npm</h3>
+      <p>Firstly, install the package: </p>
+      <pre><code>npm i highcharts-grouped-categories
+</code></pre>
+
+      <p>And apply the module in your code where you import Highcharts:
+      <pre><code>import Highcharts from 'highcharts';
+import GroupedCategoriesModule from 'highcharts-grouped-categories';
+
+GroupedCategoriesModule(Highcharts);
+
+// or, if you use require
+// require('highcharts-grouped-categories')(Highcharts);
+</code></pre>
+      </p>
+    </section>
+
+    <section id="usage">
+      <h2>Usage and demos</h2>
+
+      <p>It's quite simple and intuitive, just pass object as category:</p>
+
+      <pre><code>xAxis: {
+    categories: [{
+        name: "Fruit",
+        categories: ["Apple", "Banana", "Orange"]
+    }, {
+        name: "Vegetable",
+        categories: ["Carrot", "Potato", "Tomato"]
+    }, {
+        name: "Fish",
+        categories: ["Cod", "Salmon", "Tuna"]
+    }]
+}
+</code></pre>
+
+      <div class="chart-container" id="chart-basic"></div>
+
+      <p>You can also define more category levels:</p>
+
+      <pre><code>xAxis: {
+    categories: [{
+        name: "America",
+        categories: [{
+            name: "USA",
+            categories: ["New York", "San Francisco"]
+        }, {
+            name: "Canada",
+            categories: ["Toronto", "Vancouver"]
+        }, {
+            name: "Mexico",
+            categories: ["Acapulco", "Leon"]
+        }]
+    }, {
+        name: "Europe",
+        categories: [{
+            name: "United Kingdom",
+            categories: ["London", "Liverpool"]
+        }, {
+            name: "France",
+            categories: ["Paris", "Marseille"]
+        }, {
+            name: "Germany",
+            categories: ["Berlin", "Munich"]
+        }]
+    }]
+}
+</code></pre>
+
+      <div class="chart-container" id="chart-more"></div>
+
+      <p>For each level you can define subset of styling options. 0-level categories are based on the default Highcharts
+        options.</p>
+
+      <pre><code>xAxis: {
+    labels: {
+        groupedOptions: [{
+            style: {
+                color: 'red' // set red font for labels in 1st-Level  
+            }
+        }, {
+            rotation: -45, // rotate labels for a 2nd-level
+            align: 'right'
+        }],
+        rotation: 0 // 0-level options aren't changed, use them as always
+    },
+    categories: [{
+        name: "America",
+        categories: [{
+            name: "USA",
+            categories: ["New York", "San Francisco"]
+        }, {
+            name: "Canada",
+            categories: ["Toronto", "Vancouver"]
+        }, {
+            name: "Mexico",
+            categories: ["Acapulco", "Leon"]
+        }]
+    }, {
+        name: "Europe",
+        categories: [{
+            name: "United Kingdom",
+            categories: ["London", "Liverpool"]
+        }, {
+            name: "France",
+            categories: ["Paris", "Marseille"]
+        }, {
+            name: "Germany",
+            categories: ["Berlin", "Munich"]
+        }]
+    }]
+}
+</pre></code>
+    </section>
+
+    <section id="code">
+      <h2>Code</h2>
+
+      <p>The latest code is available on <a href="https://github.com/blacklabel/grouped_categories/">our Github
+          repository.</a> Look for the grouped_categories.js file which contains the entire module.
+      </p>
+    </section>
+
+    <section id="demo">
+      <h2>Demo</h2>
+
+      <p>All the source code for this documentation page is available on <a
+          href="https://github.com/blacklabel/grouped_categories/">our Github
+          repository.</a> in the /docs directory</p>
+
+      <p>Here's a link to a
+        <a href="https://jsfiddle.net/BlackLabel/TFhd7/5" class="!text-violet-500" target="_blank">demo in JSFiddle.</a>
+      </p>
+    </section>
+  </article>
+
+  <script src="./scripts/charts.js"></script>
+</body>
+
+</html>
