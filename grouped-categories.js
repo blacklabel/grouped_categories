@@ -93,7 +93,7 @@
 
 		while (len--) {
 			cat = cats[len];
-			
+
 			if (cat.categories) {
 				if (parent) {
 					cat.parent = parent;
@@ -166,8 +166,8 @@
 		// height. Applies to the default font family.
 		// https://jsfiddle.net/highcharts/7xvn7/
 		var lineHeight = (fontSize < 24 ?
-				fontSize + 3 :
-				Math.round(fontSize * 1.2)),
+			fontSize + 3 :
+			Math.round(fontSize * 1.2)),
 			baseline = Math.round(lineHeight * 0.8);
 		return {
 			h: lineHeight,
@@ -181,6 +181,10 @@
 	//
 
 	axisProto.init = function (chart, options, coll) {
+		// #220
+		if (typeof options === 'object' && options.categories) {
+			options = merge(options, { labels: { step: 1 } });
+		}
 		// default behaviour
 		protoAxisInit.call(this, chart, options, coll);
 
@@ -273,13 +277,13 @@
 		// render grid path for the first time
 		if (!grid) {
 			grid = axis.labelsGrid = axis.chart.renderer.path()
-			.attr({
-				// #58: use tickWidth/tickColor instead of lineWidth/lineColor:
-				strokeWidth: tickWidth, // < 4.0.3
-				'stroke-width': tickWidth, // 4.0.3+ #30
-				stroke: options.tickColor || '' // for styled mode (tickColor === undefined)
-			})
-			.add(axis.axisGroup);
+				.attr({
+					// #58: use tickWidth/tickColor instead of lineWidth/lineColor:
+					strokeWidth: tickWidth, // < 4.0.3
+					'stroke-width': tickWidth, // 4.0.3+ #30
+					stroke: options.tickColor || '' // for styled mode (tickColor === undefined)
+				})
+				.add(axis.axisGroup);
 			// for styled mode - add class
 			if (!options.tickColor) {
 				grid.addClass('highcharts-tick');
@@ -351,17 +355,17 @@
 		}
 		walk(this.categoriesTree, 'categories', function (group) {
 			var tick = group.tick;
-			
+
 			if (!tick) {
 				return false;
 			}
 			tick.label.destroy();
-			
+
 			each(tick, function (v, i) {
 				delete tick[i];
 			});
 			delete group.tick;
-			
+
 			return true;
 		});
 		this.labelsGrid = null;
@@ -409,13 +413,13 @@
 			),
 			category,
 			formatter;
-		
+
 		protoTickAddLabel.call(tick);
-		
+
 		if (!axis.categories || !(category = axis.categories[tick.pos])) {
 			return false;
 		}
-		
+
 		// set label text - but applied after formatter #46
 		if (tick.label) {
 			formatter = function (ctx) {
@@ -441,7 +445,7 @@
 			// update with new text length, since textSetter removes the size caches when text changes. #137
 			tick.label.textPxLength = tick.label.getBBox().width;
 		}
-		
+
 		// create elements for parent categories
 		if (axis.isGrouped && axis.options.labels.enabled) {
 			tick.addGroupedLabels(category);
@@ -583,21 +587,70 @@
 			return ret;
 		}
 
+		// #220
+		let slotWidth = horiz ?
+			(axis.width / axis.categories.length) * tick.parent.leaves :
+			(axis.height / axis.categories.length) * tick.parent.leaves;
+
+		if (axis.options.labels.step === 1 && tick.label) {
+			if (slotWidth < 15) {
+				tick.label.css({ display: 'none' });
+			} else if ((tick.rotation !== -90 || tick.rotation !== 90) &&
+				tick.label.getBBox().width < slotWidth) {
+				tick.label.css({
+					display: 'block',
+					width: slotWidth,
+					whiteSpace: 'normal',
+					textOverflow: 'ellipsis'
+				});
+			} else {
+				tick.label.css({
+					display: 'block',
+					whiteSpace: undefined,
+					textOverflow: undefined
+				});
+			}
+		}
 
 		while (group.parent) {
 			group = group.parent;
-			
+
 			var fix = fixOffset(treeCat),
 				userX = group.labelOffsets.x,
 				userY = group.labelOffsets.y;
-			
+
 			minPos = tickPosition(tick, mathMax(group.startAt - 1, min - 1));
 			maxPos = tickPosition(tick, mathMin(group.startAt + group.leaves - 1 - fix, max));
 			bBox = group.label.getBBox(true);
 			lvlSize = axis.groupSize(depth);
+
+			// #220
+			let groupSlotWidth = horiz ?
+				(axis.width / axis.categories.length) * group.leaves :
+				(axis.height / axis.categories.length) * group.leaves;
+
+			if (axis.options.labels.step === 1 && group.label) {
+				if (groupSlotWidth < 15) {
+					group.label.css({ display: 'none' });
+				} else if ((tick.rotation !== -90 || tick.rotation !== 90) &&
+					tick.label.getBBox().width < slotWidth) {
+					group.label.css({
+						display: 'block',
+						width: groupSlotWidth,
+						textOverflow: 'ellipsis'
+					});
+				} else {
+					group.label.css({
+						display: 'block',
+						width: undefined,
+						textOverflow: undefined
+					});
+				}
+			}
+
 			// check if on the edge to adjust
 			reverseCrisp = ((horiz && maxPos.x === axis.pos + axis.len) || (!horiz && maxPos.y === axis.pos)) ? -1 : 0;
-			
+
 			attrs = horiz ? {
 				x: (minPos.x + maxPos.x) / 2 + userX,
 				y: size + axis.groupFontHeights[depth] + lvlSize / 2 + userY / 2
@@ -605,7 +658,7 @@
 				x: size + lvlSize / 2 + userX,
 				y: (minPos.y + maxPos.y - bBox.height) / 2 + baseLine + userY
 			};
-			
+
 			if (!isNaN(attrs.x) && !isNaN(attrs.y)) {
 				group.label.attr(attrs);
 
@@ -647,7 +700,7 @@
 		}
 		return protoTickGetLabelSize.call(this);
 	};
-	
+
 	// Since datasorting is not supported by the plugin,
 	// override replaceMovedLabel method, #146.
 	HC.wrap(HC.Tick.prototype, 'replaceMovedLabel', function (proceed) {
