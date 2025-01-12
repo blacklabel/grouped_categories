@@ -1,6 +1,7 @@
 /* global Highcharts module */
 (function (factory) {
 	if (typeof module === 'object' && module.exports) {
+		factory.default = factory;
 		module.exports = factory;
 	} else {
 		factory(Highcharts);
