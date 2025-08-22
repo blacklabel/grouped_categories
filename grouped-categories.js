@@ -641,7 +641,7 @@
 		if (this.axis.isGrouped === true) {
 			// #72, getBBox might need recalculating when chart is tall
 			var size = protoTickGetLabelSize.call(this) + 10;
-				// topLabelSize = 0//this.axis.labelsSizes[0];
+				//topLabelSize = this.axis.labelsSizes[0];
 			if (topLabelSize < size) {
                 topLabelSize = this.axis.labelsSizes[0];
 				this.axis.labelsSizes[0] = size;
