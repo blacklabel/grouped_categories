@@ -1,6 +1,6 @@
 {
   "name": "highcharts-grouped-categories",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Highcharts plugin to add grouped categories to charts.",
   "main": "grouped-categories.js",
   "repository": {
