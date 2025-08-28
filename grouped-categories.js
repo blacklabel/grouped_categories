@@ -23,7 +23,6 @@
 		merge = HC.merge,
 		pick = HC.pick,
 		each = HC.each,
-        topLabelSize = 0,
 
 		// cache prototypes
 		axisProto = HC.Axis.prototype,
@@ -402,7 +401,6 @@
 
 	// Override methods prototypes
 	tickProto.addLabel = function () {
-        topLabelSize = 0;
 		var tick = this,
 			axis = tick.axis,
 			labelOptions = pick(
@@ -411,6 +409,9 @@
 			),
 			category,
 			formatter;
+		
+		// Initialize topLabelSize on the axis
+		axis.topLabelSize = 0;
 		
 		protoTickAddLabel.call(tick);
 		
@@ -641,9 +642,8 @@
 		if (this.axis.isGrouped === true) {
 			// #72, getBBox might need recalculating when chart is tall
 			var size = protoTickGetLabelSize.call(this) + 10;
-				//topLabelSize = this.axis.labelsSizes[0];
-			if (topLabelSize < size) {
-                topLabelSize = this.axis.labelsSizes[0];
+			if (this.axis.topLabelSize < size) {
+                this.axis.topLabelSize = this.axis.labelsSizes[0];
 				this.axis.labelsSizes[0] = size;
 			}
 			return sum(this.axis.labelsSizes);
