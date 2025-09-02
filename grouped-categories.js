@@ -8,9 +8,9 @@
 }(function (HC) {
 	'use strict';
 	/**
-	 * Grouped Categories v1.3.2 (2023-06-05)
+	 * Grouped Categories v1.3.3 (2025-09-02)
 	 *
-	 * (c) 2012-2023 Black Label
+	 * (c) 2012-2025 Black Label
 	 *
 	 * License: Creative Commons Attribution (CC)
 	 */
@@ -93,7 +93,7 @@
 
 		while (len--) {
 			cat = cats[len];
-			
+
 			if (cat.categories) {
 				if (parent) {
 					cat.parent = parent;
@@ -351,17 +351,17 @@
 		}
 		walk(this.categoriesTree, 'categories', function (group) {
 			var tick = group.tick;
-			
+
 			if (!tick) {
 				return false;
 			}
 			tick.label.destroy();
-			
+
 			each(tick, function (v, i) {
 				delete tick[i];
 			});
 			delete group.tick;
-			
+
 			return true;
 		});
 		this.labelsGrid = null;
@@ -409,13 +409,16 @@
 			),
 			category,
 			formatter;
-		
+
+		// Initialize topLabelSize on the axis
+        axis.topLabelSize = 0;
+
 		protoTickAddLabel.call(tick);
-		
+
 		if (!axis.categories || !(category = axis.categories[tick.pos])) {
 			return false;
 		}
-		
+
 		// set label text - but applied after formatter #46
 		if (tick.label) {
 			formatter = function (ctx) {
@@ -441,7 +444,7 @@
 			// update with new text length, since textSetter removes the size caches when text changes. #137
 			tick.label.textPxLength = tick.label.getBBox().width;
 		}
-		
+
 		// create elements for parent categories
 		if (axis.isGrouped && axis.options.labels.enabled) {
 			tick.addGroupedLabels(category);
@@ -586,18 +589,18 @@
 
 		while (group.parent) {
 			group = group.parent;
-			
+
 			var fix = fixOffset(treeCat),
 				userX = group.labelOffsets.x,
 				userY = group.labelOffsets.y;
-			
+
 			minPos = tickPosition(tick, mathMax(group.startAt - 1, min - 1));
 			maxPos = tickPosition(tick, mathMin(group.startAt + group.leaves - 1 - fix, max));
 			bBox = group.label.getBBox(true);
 			lvlSize = axis.groupSize(depth);
 			// check if on the edge to adjust
 			reverseCrisp = ((horiz && maxPos.x === axis.pos + axis.len) || (!horiz && maxPos.y === axis.pos)) ? -1 : 0;
-			
+
 			attrs = horiz ? {
 				x: (minPos.x + maxPos.x) / 2 + userX,
 				y: size + axis.groupFontHeights[depth] + lvlSize / 2 + userY / 2
@@ -605,7 +608,7 @@
 				x: size + lvlSize / 2 + userX,
 				y: (minPos.y + maxPos.y - bBox.height) / 2 + baseLine + userY
 			};
-			
+
 			if (!isNaN(attrs.x) && !isNaN(attrs.y)) {
 				group.label.attr(attrs);
 
@@ -638,21 +641,28 @@
 	tickProto.getLabelSize = function () {
 		if (this.axis.isGrouped === true) {
 			// #72, getBBox might need recalculating when chart is tall
-			var size = protoTickGetLabelSize.call(this) + 10,
-				topLabelSize = this.axis.labelsSizes[0];
-			if (topLabelSize < size) {
-				this.axis.labelsSizes[0] = size;
-			}
+			var size = protoTickGetLabelSize.call(this) + 10;
+			if (this.axis.topLabelSize < size) {
+                this.axis.topLabelSize = this.axis.labelsSizes[0];
+                this.axis.labelsSizes[0] = size;
+            }
 			return sum(this.axis.labelsSizes);
 		}
 		return protoTickGetLabelSize.call(this);
 	};
-	
+
 	// Since datasorting is not supported by the plugin,
 	// override replaceMovedLabel method, #146.
 	HC.wrap(HC.Tick.prototype, 'replaceMovedLabel', function (proceed) {
 		if (!this.axis.isGrouped) {
 			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+		} else {
+			// Get rid of unnecessary duplicated label, #222
+			var movedLabel = this.movedLabel;
+			if (movedLabel) {
+				movedLabel.destroy();
+				delete this.movedLabel;
+			}
 		}
 	});
 
