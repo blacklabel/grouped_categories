@@ -8,9 +8,9 @@
 }(function (HC) {
 	'use strict';
 	/**
-	 * Grouped Categories v1.3.2 (2023-06-05)
+	 * Grouped Categories v1.3.3 (2025-09-02)
 	 *
-	 * (c) 2012-2023 Black Label
+	 * (c) 2012-2025 Black Label
 	 *
 	 * License: Creative Commons Attribution (CC)
 	 */
