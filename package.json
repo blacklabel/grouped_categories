@@ -22,6 +22,7 @@
   "files": [
     "grouped-categories.js"
   ],
+  "types": "grouped-categories.d.ts",
   "devDependencies": {
     "gulp": "^4.0.2",
     "gulp-eslint": "^3.0.0"
