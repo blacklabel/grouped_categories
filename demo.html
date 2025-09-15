@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Highcharts Grouped Categories Demo</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="dist/grouped-categories.js"></script>
+    <!-- <script src="grouped-categories.js"></script> -->
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .chart-container {
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        .description {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Highcharts Grouped Categories Demo</h1>
+        
+        <div class="description">
+            <h3>Basic Grouped Categories</h3>
+            <p>This chart demonstrates simple two-level grouping with fruits and vegetables.</p>
+        </div>
+        
+        <div class="chart-container">
+            <div id="basic-chart" style="height: 400px;"></div>
+        </div>
+
+        <div class="description">
+            <h3>Nested Grouped Categories</h3>
+            <p>This chart shows three-level nesting with continents, countries, and cities.</p>
+        </div>
+        
+        <div class="chart-container">
+            <div id="nested-chart" style="height: 400px;"></div>
+        </div>
+
+        <div class="description">
+            <h3>Custom Styling</h3>
+            <p>This chart demonstrates custom styling for different group levels.</p>
+        </div>
+        
+        <div class="chart-container">
+            <div id="styled-chart" style="height: 400px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Basic grouped categories
+        Highcharts.chart('basic-chart', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Basic Grouped Categories'
+            },
+            xAxis: {
+                categories: [{
+                    name: 'Fruits',
+                    categories: ['Apples', 'Pears', 'Oranges', 'Bananas']
+                }, {
+                    name: 'Vegetables',
+                    categories: ['Carrots', 'Broccoli', 'Spinach', 'Tomatoes']
+                }, {
+                    name: 'Grains',
+                    categories: ['Wheat', 'Rice', 'Corn', 'Oats']
+                }]
+            },
+            yAxis: {
+                title: {
+                    text: 'Quantity'
+                }
+            },
+            series: [{
+                name: 'Sales',
+                data: [10, 15, 12, 8, 14, 9, 11, 13, 16, 7, 12, 10]
+            }]
+        });
+
+        // Nested grouped categories
+        Highcharts.chart('nested-chart', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Nested Grouped Categories'
+            },
+            xAxis: {
+                categories: [{
+                    name: 'Americas',
+                    categories: [{
+                        name: 'North America',
+                        categories: ['USA', 'Canada', 'Mexico']
+                    }, {
+                        name: 'South America',
+                        categories: ['Brazil', 'Argentina', 'Chile']
+                    }]
+                }, {
+                    name: 'Europe',
+                    categories: [{
+                        name: 'Western Europe',
+                        categories: ['UK', 'France', 'Germany']
+                    }, {
+                        name: 'Eastern Europe',
+                        categories: ['Poland', 'Czech Republic', 'Hungary']
+                    }]
+                }]
+            },
+            yAxis: {
+                title: {
+                    text: 'Population (millions)'
+                }
+            },
+            series: [{
+                name: 'Population',
+                data: [331, 38, 129, 213, 45, 19, 67, 65, 83, 11, 10, 10]
+            }]
+        });
+
+        // Custom styled grouped categories
+        Highcharts.chart('styled-chart', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Custom Styled Grouped Categories'
+            },
+            xAxis: {
+                categories: [{
+                    name: 'Technology',
+                    categories: ['Software', 'Hardware', 'Services']
+                }, {
+                    name: 'Healthcare',
+                    categories: ['Pharmaceuticals', 'Medical Devices', 'Telemedicine']
+                }, {
+                    name: 'Finance',
+                    categories: ['Banking', 'Insurance', 'Investment']
+                }],
+                labels: {
+                    groupedOptions: [{
+                        style: {
+                            color: '#2E86AB',
+                            fontWeight: 'bold',
+                            fontSize: '14px'
+                        }
+                    }, {
+                        style: {
+                            color: '#A23B72',
+                            fontSize: '12px'
+                        }
+                    }]
+                },
+                tickWidth: 2,
+                tickColor: '#2E86AB'
+            },
+            yAxis: {
+                title: {
+                    text: 'Revenue ($ millions)'
+                }
+            },
+            series: [{
+                name: 'Revenue',
+                data: [150, 200, 120, 180, 160, 140, 220, 190, 170]
+            }]
+        });
+    </script>
+</body>
+</html>

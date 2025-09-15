@@ -1,0 +1,2 @@
+function Highcharts () {}
+function module () {}

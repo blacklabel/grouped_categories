@@ -9,8 +9,8 @@
 <title>Grouped Categories - Highcharts module</title>
 
 <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
-<script src="https://code.highcharts.com/js/highcharts.js"></script>
-<script src="./grouped-categories.js"></script>
+<script src="https://code.highcharts.com/12/highcharts.js"></script>
+<script src="./dist/grouped-categories.js"></script>
 
 </head>
 <body>
@@ -47,7 +47,8 @@
 window.chart = new Highcharts.Chart({
     chart: {
         renderTo: "chart",
-        type: "column"
+        type: "column",
+        styledMode: true
     },
     series: [{
         data: [4, 14, 18, 5, 6, 5, 14, 15, 18]
