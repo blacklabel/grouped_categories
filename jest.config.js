@@ -13,8 +13,5 @@ module.exports = {
 	],
 	coverageDirectory: 'coverage',
 	coverageReporters: ['text', 'lcov', 'html'],
-	setupFilesAfterEnv: ['<rootDir>/ts/test-setup.ts'],
-	moduleNameMapping: {
-		'^highcharts$': '<rootDir>/node_modules/highcharts/highcharts.js'
-	}
+	setupFilesAfterEnv: ['<rootDir>/test-setup.ts'],
 };

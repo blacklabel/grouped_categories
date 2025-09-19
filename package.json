@@ -55,6 +55,7 @@
     "gulp-replace": "^1.1.4",
     "gulp-sourcemaps": "3.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
+    "highcharts": "^11.0.0",
     "highcharts-github": "github:highcharts/highcharts",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
