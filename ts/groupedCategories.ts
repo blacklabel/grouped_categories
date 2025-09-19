@@ -21,17 +21,13 @@ const { merge, pick, objectEach, isNumber, isObject, isString, pInt } = Utilitie
 const { format } = Templating;
 
 // Utility functions
-function deepClone<T>(obj: T): T {
-    return JSON.parse(JSON.stringify(obj)) as T;
-}
-
+const deepClone = <T>(obj: T): T => JSON.parse(JSON.stringify(obj)) as T;
 const sum = (arr: number[]): number => arr.reduce((acc, val): number => acc + val, 0);
-
-function walk<T>(
+const walk = <T>(
     arr: T[],
     key: keyof T,
     fn: (item: T) => boolean | void
-): void {
+): void => {
     for (let i = arr.length - 1; i >= 0; i--) {
         const children = arr[i][key] as T[];
         if (children) {
@@ -39,7 +35,7 @@ function walk<T>(
         }
         fn(arr[i]);
     }
-}
+};
 
 // Category class
 class Category {
@@ -67,11 +63,11 @@ class Category {
 }
 
 // Add category leaf to array
-function addLeaf(
+const addLeaf = (
     out: GroupedCategory[],
     cat: GroupedCategory | string,
     parent?: GroupedCategory
-): void {
+): void => {
     out.unshift(new Category(cat, parent));
 
     let currentParent = parent;
@@ -79,16 +75,16 @@ function addLeaf(
         currentParent.leaves = (currentParent.leaves || 0) + 1;
         currentParent = currentParent.parent;
     }
-}
+};
 
 // Builds reverse category tree
-function buildTree(
+const buildTree = (
     cats: Array<GroupedCategory | string>,
     out: GroupedCategory[],
     options: { depth: number },
     parent?: GroupedCategory,
     depth = 0
-): void {
+): void => {
     options.depth = options.depth || 0;
 
     for (let i = cats.length - 1; i >= 0; i--) {
@@ -104,10 +100,10 @@ function buildTree(
         }
     }
     options.depth = Math.max(options.depth, depth);
-}
+};
 
 // Pushes part of grid to path
-function addGridPart(path: Array<string | number>, d: number[], width: number): void {
+const addGridPart = (path: Array<string | number>, d: number[], width: number): void => {
     // Based on crispLine from HC (#65)
     if (d[0] === d[2]) {
         d[0] = d[2] = Math.round(d[0]) - (width % 2 / 2);
@@ -122,19 +118,19 @@ function addGridPart(path: Array<string | number>, d: number[], width: number): 
         'L',
         d[2], d[3]
     );
-}
+};
 
 // Returns tick position
-function tickPosition(tick: GroupedTick, pos: number): PositionObject {
+const tickPosition = (tick: GroupedTick, pos: number): PositionObject => {
     return tick.getPosition(tick.axis.horiz, pos, tick.axis.tickmarkOffset);
-}
+};
 
 // Create local function `fontMetrics` to provide compatibility with HC 11 (#200)
-function fontMetrics(fontSize: string | number, chart?: Chart, elem?: SVGElement): {
+const fontMetrics = (fontSize: string | number, chart?: Chart, elem?: SVGElement): {
     h: number;
     b: number;
     f: number;
-} {
+} => {
     let fontSizeNum: number | string | undefined;
   
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -159,7 +155,7 @@ function fontMetrics(fontSize: string | number, chart?: Chart, elem?: SVGElement
         b: baseline,
         f: fontSizeNum
     };
-}
+};
 
 // Main plugin implementation
 

@@ -12,7 +12,6 @@
 		factory(Highcharts);
 	}
 }(function (Highcharts) {
-// Import Highcharts from 'highcharts-github/ts/Core/Globals';
 
 
 
@@ -21,11 +20,9 @@
 const { merge, pick, objectEach, isNumber, isObject, isString, pInt, format, Tick, Axis, SVGElement } = Highcharts;
 
 // Utility functions
-function deepClone(obj) {
-    return JSON.parse(JSON.stringify(obj));
-}
+const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
 const sum = (arr) => arr.reduce((acc, val) => acc + val, 0);
-function walk(arr, key, fn) {
+const walk = (arr, key, fn) => {
     for (let i = arr.length - 1; i >= 0; i--) {
         const children = arr[i][key];
         if (children) {
@@ -33,7 +30,7 @@ function walk(arr, key, fn) {
         }
         fn(arr[i]);
     }
-}
+};
 // Category class
 class Category {
     constructor(obj, parent) {
@@ -52,16 +49,16 @@ class Category {
     }
 }
 // Add category leaf to array
-function addLeaf(out, cat, parent) {
+const addLeaf = (out, cat, parent) => {
     out.unshift(new Category(cat, parent));
     let currentParent = parent;
     while (currentParent) {
         currentParent.leaves = (currentParent.leaves || 0) + 1;
         currentParent = currentParent.parent;
     }
-}
+};
 // Builds reverse category tree
-function buildTree(cats, out, options, parent, depth = 0) {
+const buildTree = (cats, out, options, parent, depth = 0) => {
     options.depth = options.depth || 0;
     for (let i = cats.length - 1; i >= 0; i--) {
         const cat = cats[i];
@@ -76,9 +73,9 @@ function buildTree(cats, out, options, parent, depth = 0) {
         }
     }
     options.depth = Math.max(options.depth, depth);
-}
+};
 // Pushes part of grid to path
-function addGridPart(path, d, width) {
+const addGridPart = (path, d, width) => {
     // Based on crispLine from HC (#65)
     if (d[0] === d[2]) {
         d[0] = d[2] = Math.round(d[0]) - (width % 2 / 2);
@@ -87,13 +84,13 @@ function addGridPart(path, d, width) {
         d[1] = d[3] = Math.round(d[1]) + (width % 2 / 2);
     }
     path.push('M', d[0], d[1], 'L', d[2], d[3]);
-}
+};
 // Returns tick position
-function tickPosition(tick, pos) {
+const tickPosition = (tick, pos) => {
     return tick.getPosition(tick.axis.horiz, pos, tick.axis.tickmarkOffset);
-}
+};
 // Create local function `fontMetrics` to provide compatibility with HC 11 (#200)
-function fontMetrics(fontSize, chart, elem) {
+const fontMetrics = (fontSize, chart, elem) => {
     let fontSizeNum;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore: workaround for old IE, window.getComputedStyle always exists in modern browsers
@@ -116,7 +113,7 @@ function fontMetrics(fontSize, chart, elem) {
         b: baseline,
         f: fontSizeNum
     };
-}
+};
 // Main plugin implementation
 // Cache prototypes
 const axisProto = Axis.prototype;
