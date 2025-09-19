@@ -297,6 +297,8 @@ tickProto.addLabel = function () {
     const axis = tick.axis;
     const labelOptions = pick(tick.options && tick.options.labels, axis.options.labels);
     let category;
+    // Initialize topLabelSize on the axis
+    axis.topLabelSize = 0;
     protoTickAddLabel.call(tick);
     if (!axis.categories || !(category = axis.categories[tick.pos])) {
         return false;
@@ -487,6 +489,7 @@ tickProto.getLabelSize = function () {
             if (!axis.labelsSizes) {
                 axis.labelsSizes = [];
             }
+            axis.topLabelSize = axis.labelsSizes[0];
             axis.labelsSizes[0] = size;
         }
         return sum(axis.labelsSizes || []);
@@ -497,6 +500,14 @@ tickProto.replaceMovedLabel = function () {
     const tick = this;
     if (!tick.axis.isGrouped) {
         protoTickReplaceMovedLabel.call(tick);
+    }
+    else {
+        // Get rid of unnecessary duplicated label, #222
+        const movedLabel = this.movedLabel;
+        if (movedLabel) {
+            movedLabel.destroy();
+            delete this.movedLabel;
+        }
     }
 };
 

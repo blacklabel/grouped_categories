@@ -386,6 +386,9 @@ tickProto.addLabel = function (this: GroupedTick): boolean {
 
     let category: string | GroupedCategory;
 
+    // Initialize topLabelSize on the axis
+    axis.topLabelSize = 0;
+
     protoTickAddLabel.call(tick);
 
     if (!axis.categories || !(category = axis.categories[tick.pos])) {
@@ -632,6 +635,7 @@ tickProto.getLabelSize = function (): number {
                 axis.labelsSizes = [];
             }
 
+            axis.topLabelSize = axis.labelsSizes[0];
             axis.labelsSizes[0] = size;
         }
 
@@ -646,5 +650,13 @@ tickProto.replaceMovedLabel = function (): void {
 
     if (!tick.axis.isGrouped) {
         protoTickReplaceMovedLabel.call(tick);
+    } else {
+        // Get rid of unnecessary duplicated label, #222
+        const movedLabel = this.movedLabel;
+
+        if (movedLabel) {
+            movedLabel.destroy();
+            delete this.movedLabel;
+        }
     }
 };

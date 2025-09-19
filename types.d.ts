@@ -82,6 +82,7 @@ interface GroupedAxis extends Omit<Axis, 'options' | 'userOptions' | 'categories
   originalTickLength?: number;
   tickLength?: number | null;
   tickWidth?: number;
+  topLabelSize?: number;
   ticks: Record<string, GroupedTick>;
   init: (chart: Chart, options: Partial<GroupedAxisOptions>, coll?: AxisCollectionKey) => void;
   setupGroups: (options: Partial<GroupedAxisOptions>) => void;
