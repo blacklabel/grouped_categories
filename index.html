@@ -9,7 +9,7 @@
 <title>Grouped Categories - Highcharts module</title>
 
 <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
-<script src="https://code.highcharts.com/12/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="./dist/grouped-categories.js"></script>
 
 </head>
@@ -41,6 +41,7 @@
 <p>Go to project page to see this module in action: <a href="https://blacklabel.github.io/grouped_categories/">https://blacklabel.github.io/grouped_categories/</a></p>
 
 <div class="chart-container" id="chart"></div>
+<div class="chart-container" id="chart2"></div>
 
 
 <script>
@@ -67,6 +68,22 @@ window.chart = new Highcharts.Chart({
     }
 });
 </script>
+
+<script>
+    window.chart = new Highcharts.Chart({
+        chart: {
+            renderTo: "chart2",
+            type: "column",
+            styledMode: true
+        },
+        series: [{
+            data: [4, 14, 18, 5, 6, 5, 14, 15, 18]
+        }],
+        xAxis: {
+            categories: ["Apple", "Banana", "Orange", "Carrot", "Potato", "Tomato", "Cod", "Salmon", "Tuna"],
+        }
+    });
+    </script>
 
 
 <h3>Requirements</h3>
@@ -177,7 +194,18 @@ window.chart = new Highcharts.Chart({
   series: [{
     data: [19, 6, 2, 1, 9, 4, 15, 2, 9, 11, 16, 18]
   }],
-  xAxis: {    
+  xAxis: {
+    labels: {
+        groupedOptions: [{
+            style: {
+                color: 'red' // set red font for labels in 1st-Level  
+            }
+        }, {
+            rotation: -45, // rotate labels for a 2nd-level
+            align: 'right'
+        }],
+        rotation: 0 // 0-level options aren't changed, use them as always
+    },
     categories: [{
       name: "America",
       categories: [{

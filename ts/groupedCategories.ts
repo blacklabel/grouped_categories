@@ -199,23 +199,26 @@ axisProto.setupGroups = function (this: GroupedAxis, options: Partial<GroupedAxi
     const css = labelOptions && labelOptions.style;
 
     buildTree(categories, reverseTree, stats);
-
-    axis.categoriesTree = categories;
-    axis.categories = reverseTree;
     axis.isGrouped = stats.depth !== 0;
-    axis.labelsDepth = stats.depth;
-    axis.labelsSizes = [];
-    axis.labelsGridPath = [];
-    axis.tickLength = options.tickLength || axis.tickLength || null;
-    axis.tickWidth = pick(options.tickWidth, axis.isXAxis ? 1 : 0);
-    axis.directionFactor = [-1, 1, 1, -1][axis.side];
-    axis.options.lineWidth = pick(options.lineWidth, 1);
-    axis.groupFontHeights = [];
-    
-    for (let i = 0; i <= stats.depth; i++) {
-        const hasOptions = userAttr && userAttr[i - 1];
-        const mergedCSS = hasOptions && userAttr[i - 1].style ? merge(css, userAttr[i - 1].style) : css;
-        axis.groupFontHeights[i] = Math.round(fontMetrics(mergedCSS.fontSize ? mergedCSS.fontSize : 0, chart).b * 0.3);
+
+    if (axis.isGrouped) {
+        axis.categoriesTree = categories;
+        axis.categories = reverseTree;
+        axis.labelsDepth = stats.depth;
+        axis.labelsSizes = [];
+        axis.labelsGridPath = [];
+        axis.tickLength = options.tickLength || axis.tickLength || null;
+        axis.tickWidth = pick(options.tickWidth, axis.isXAxis ? 1 : 0);
+        axis.directionFactor = [-1, 1, 1, -1][axis.side];
+        axis.options.lineWidth = pick(options.lineWidth, 1);
+        axis.groupFontHeights = [];
+        
+        for (let i = 0; i <= stats.depth; i++) {
+            const hasOptions = userAttr && userAttr[i - 1];
+            const mergedCSS = hasOptions && userAttr[i - 1].style ? merge(css, userAttr[i - 1].style) : css;
+            axis.groupFontHeights[i] =
+              Math.round(fontMetrics(mergedCSS.fontSize ? mergedCSS.fontSize : 0, chart).b * 0.3); // TODO why * 0.3?
+        }
     }
 };
 
@@ -366,6 +369,7 @@ axisProto.groupSize = function (this: GroupedAxis, level: number | boolean, posi
     }
 
     if (isNumber(level) && position !== undefined) {
+        // TODO - Why + 10? Should be like this for sure? Try use label.distance here
         positions[level] = Math.max(positions[level] || 0, position + 10 + Math.abs(userXY));
     }
 
@@ -390,6 +394,11 @@ tickProto.addLabel = function (this: GroupedTick): boolean {
     axis.topLabelSize = 0;
 
     protoTickAddLabel.call(tick);
+
+    // Not grouped axis should not be affected, #228
+    if (!axis.isGrouped) {
+        return false;
+    }
 
     if (!axis.categories || !(category = axis.categories[tick.pos])) {
         return false;
@@ -577,6 +586,7 @@ tickProto.render = function (index: number, old?: boolean, opacity?: number): vo
         lvlSize = axis.groupSize(depth);
         reverseCrisp = ((horiz && maxPos.x === axis.pos + axis.len) || (!horiz && maxPos.y === axis.pos)) ? -1 : 0;
 
+        // TODO - check y position calculation
         attrs = horiz ? {
             x: (minPos.x + maxPos.x) / 2 + userX,
             y: (size) + ((axis).groupFontHeights?.[depth] || 0) + lvlSize / 2 + userY / 2
@@ -627,7 +637,7 @@ tickProto.getLabelSize = function (): number {
     const axis = tick.axis;
 
     if (axis.isGrouped === true) {
-        const size = protoTickGetLabelSize.call(tick) + 10;
+        const size = protoTickGetLabelSize.call(tick) + 10; // TODO - Why + 10, label.distance here?
         const topLabelSize = (axis.labelsSizes?.[0] || 0);
 
         if (topLabelSize < size) {
