@@ -8,6 +8,7 @@
     "build": "tsc",
     "build:ts": "tsc",
     "build:gulp": "npx gulp build",
+    "build:gulp:watch": "npx gulp watch",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "npx gulp lint",

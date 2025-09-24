@@ -491,19 +491,20 @@ tickProto.destroy = function () {
 tickProto.getLabelSize = function () {
     const tick = this;
     const axis = tick.axis;
-    if (axis.isGrouped === true) {
-        const size = protoTickGetLabelSize.call(tick) + 10; // TODO - Why + 10, label.distance here?
-        const topLabelSize = (axis.labelsSizes?.[0] || 0);
-        if (topLabelSize < size) {
-            if (!axis.labelsSizes) {
-                axis.labelsSizes = [];
-            }
-            axis.topLabelSize = axis.labelsSizes[0];
-            axis.labelsSizes[0] = size;
-        }
-        return sum(axis.labelsSizes || []);
+    if (!axis.isGrouped) {
+        return protoTickGetLabelSize.call(tick);
     }
-    return protoTickGetLabelSize.call(tick);
+    // Axis labels distance option should be taken into account, #206
+    // The default for <v10 was distance = 8, since v11+ it's 15.
+    const distance = axis.options.labels.distance || 8;
+    const size = protoTickGetLabelSize.call(tick) + 2 * distance;
+    if (!axis.labelsSizes) {
+        axis.labelsSizes = [];
+    }
+    axis.topLabelSize = axis.labelsSizes[0];
+    axis.labelsSizes[0] = size;
+    axis.labelsSizes[1] = size;
+    return sum(axis.labelsSizes || []) - distance;
 };
 tickProto.replaceMovedLabel = function () {
     const tick = this;

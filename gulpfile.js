@@ -94,3 +94,12 @@ gulp.task('lint', function () {
 });
 
 gulp.task('build', gulp.series('lint', 'compile'));
+
+gulp.task('watch', function () {
+  return gulp.watch('ts/*.ts', gulp.parallel(function(cb) {
+    gulp.series('compile')(function(err) {
+      if (err) console.log('Compile failed:', err.message);
+      cb();
+    });
+  }));
+});
