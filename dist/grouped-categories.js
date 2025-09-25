@@ -502,8 +502,7 @@ tickProto.getLabelSize = function () {
         axis.labelsSizes = [];
     }
     axis.topLabelSize = axis.labelsSizes[0];
-    axis.labelsSizes[0] = size;
-    axis.labelsSizes[1] = size;
+    axis.labelsSizes = axis.labelsSizes.map(() => size);
     return sum(axis.labelsSizes || []) - distance;
 };
 tickProto.replaceMovedLabel = function () {

@@ -25,8 +25,10 @@ All notable changes to this project will be documented in this file.
 - Babel configuration to preserve ES2020 when desired.
 
 ### Fixed
+- #181
 - #227
 - #228
+- #206
 
 ### Notes / Migration
 - Use `npm run build` for TypeScript build only, `npm run build:gulp` for full pipeline.

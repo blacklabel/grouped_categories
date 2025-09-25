@@ -199,12 +199,13 @@ window.chart = new Highcharts.Chart({
         groupedOptions: [{
             style: {
                 color: 'red' // set red font for labels in 1st-Level  
-            }
+            },
+            rotation: -90,
         }, {
-            rotation: -45, // rotate labels for a 2nd-level
+            rotation: -90, // rotate labels for a 2nd-level
             align: 'right'
         }],
-        rotation: 0 // 0-level options aren't changed, use them as always
+        rotation: -90 // 0-level options aren't changed, use them as always
     },
     categories: [{
       name: "America",

@@ -650,8 +650,7 @@ tickProto.getLabelSize = function (): number {
     }
 
     axis.topLabelSize = axis.labelsSizes[0];
-    axis.labelsSizes[0] = size;
-    axis.labelsSizes[1] = size;
+    axis.labelsSizes = axis.labelsSizes.map((): number => size);
 
     return sum(axis.labelsSizes || []) - distance;
 };
