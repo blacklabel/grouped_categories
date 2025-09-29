@@ -161,11 +161,15 @@ const fontMetrics = (fontSize: string | number, chart?: Chart, elem?: SVGElement
 // if it does not fit within its allocated slot width. This ensures that labels
 // do not overlap or extend beyond their bounds in grouped category axes.
 // #220
-const adjustTickLabelOverflow = (axis: GroupedAxis, groupedTick: GroupedTick, leaves: number): void => {
+const adjustTickLabelOverflow = (axis: GroupedAxis, groupedTick: GroupedTick, leaves: number, depth: number): void => {
     const horiz = axis.horiz;
     const categoriesLength = axis.categories?.length || 1;
-    const groupSlotWidth =
-      horiz ? (axis.width / categoriesLength) * leaves : (axis.height / categoriesLength) * leaves;
+    let groupSlotWidth = (axis.width / categoriesLength) * leaves;
+
+    if (groupedTick.label && !horiz) {
+        const width = axis.groupSize(depth, groupedTick.label.getBBox().width);
+        groupSlotWidth = width < 0 ? width * -1 : width;
+    }
 
     if (axis.options.labels.step === 1 && groupedTick.label) {
         if (groupSlotWidth < 15) {
@@ -622,7 +626,7 @@ tickProto.render = function (index: number, old?: boolean, opacity?: number): vo
         return ret;
     }
 
-    adjustTickLabelOverflow(axis, tick, tick.parent?.leaves || 1); // #220
+    adjustTickLabelOverflow(axis, tick, tick.leaves || 1, 0); // #220
 
     while (group.parent) {
         group = group.parent;
@@ -640,7 +644,7 @@ tickProto.render = function (index: number, old?: boolean, opacity?: number): vo
         lvlSize = axis.groupSize(depth);
         reverseCrisp = ((horiz && maxPos.x === axis.pos + axis.len) || (!horiz && maxPos.y === axis.pos)) ? -1 : 0;
 
-        adjustTickLabelOverflow(axis, group, group.leaves || 1); // #220
+        adjustTickLabelOverflow(axis, group, group.leaves || 1, depth); // #220
 
         // TODO - check y position calculation
         attrs = horiz ? {

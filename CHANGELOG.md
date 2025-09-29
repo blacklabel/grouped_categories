@@ -25,8 +25,11 @@ All notable changes to this project will be documented in this file.
 - Babel configuration to preserve ES2020 when desired.
 
 ### Fixed
+- #111
+- #179
 - #181
 - #185
+- #220
 - #227
 - #228
 - #206
