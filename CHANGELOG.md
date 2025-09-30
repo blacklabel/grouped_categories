@@ -34,6 +34,7 @@ All notable changes to this project will be documented in this file.
 - #228
 - #206
 - #212
+- #232
 
 ### Notes / Migration
 - Use `npm run build` for TypeScript build only, `npm run build:gulp` for full pipeline.

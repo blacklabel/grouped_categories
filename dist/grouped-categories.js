@@ -377,7 +377,11 @@ tickProto.addLabel = function () {
             value: isObject(category) ? category.name : category,
             pos: tick.pos
         }));
-        tick.label.textPxLength = tick.label.getBBox().width;
+        // #232 - calculate textPxLength based on rotation
+        const absRotation = Math.abs(tick.label.rotation || 0);
+        const reducedRotation = absRotation > 180 ? absRotation - (Math.floor(absRotation / 180) * 180) : absRotation;
+        tick.label.textPxLength = reducedRotation > 45 && reducedRotation < 135 ?
+            tick.label.getBBox().height : tick.label.getBBox().width;
     }
     if (axis.isGrouped && axis.options.labels.enabled && !isString(category)) {
         tick.addGroupedLabels(category);
