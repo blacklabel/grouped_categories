@@ -5,7 +5,6 @@ import Utilities from 'highcharts-github/ts/Core/Utilities';
 import SVGElement from 'highcharts-github/ts/Core/Renderer/SVG/SVGElement';
 
 import type PositionObject from 'highcharts-github/ts/Core/Renderer/PositionObject';
-import type BBoxObject from 'highcharts-github/ts/Core/Renderer/BBoxObject';
 import type Chart from 'highcharts-github/ts/Core/Chart/Chart';
 import type { AxisCollectionKey } from 'highcharts-github/ts/Core/Axis/AxisOptions';
 import type SVGPath from 'highcharts-github/ts/Core/Renderer/SVG/SVGPath';
@@ -585,9 +584,6 @@ tickProto.render = function (index: number, old?: boolean, opacity?: number): vo
     const tickWidth = axis.tickWidth || 0;
     const xy = tickPosition(tick, tickPos);
     const start = horiz ? xy.y : xy.x;
-    const baseLine = fontMetrics(
-        axis.options.labels.style.fontSize ? axis.options.labels.style.fontSize : 0, axis.chart
-    ).b;
 
     let group = tick;
     let size = axis.groupSize(0);
@@ -598,7 +594,6 @@ tickProto.render = function (index: number, old?: boolean, opacity?: number): vo
     let minPos: PositionObject;
     let maxPos: PositionObject;
     let attrs: { x: number; y: number };
-    let bBox: BBoxObject | undefined;
 
     if (isFirst) {
         gridAttrs = horiz ?
@@ -638,25 +633,24 @@ tickProto.render = function (index: number, old?: boolean, opacity?: number): vo
         const fix = fixOffset(treeCat);
         const userX = group.labelOffsets?.x || 0;
         const userY = group.labelOffsets?.y || 0;
+        const groupFontHeight = axis.groupFontHeights?.[depth] || 0;
 
         minPos = tickPosition(tick, min ? Math.max(group.startAt! - 1, min - 1) : group.startAt! - 1);
         maxPos = tickPosition(
             tick,
             max ? Math.min(group.startAt! + group.leaves! - 1 - fix, max) : group.startAt! + group.leaves! - 1 - fix
         );
-        bBox = group.label?.getBBox(true);
         lvlSize = axis.groupSize(depth);
         reverseCrisp = ((horiz && maxPos.x === axis.pos + axis.len) || (!horiz && maxPos.y === axis.pos)) ? -1 : 0;
 
         adjustTickLabelOverflow(axis, group, group.leaves || 1, depth); // #220
 
-        // TODO - check y position calculation
         attrs = horiz ? {
             x: (minPos.x + maxPos.x) / 2 + userX,
-            y: (size) + ((axis).groupFontHeights?.[depth] || 0) + lvlSize / 2 + userY / 2
+            y: size + groupFontHeight + lvlSize / 2 + userY / 2
         } : {
-            x: (size) + lvlSize / 2 + userX,
-            y: (minPos.y + maxPos.y - (bBox?.height || 0)) / 2 + baseLine + userY
+            x: size + lvlSize / 2 + userX,
+            y: (minPos.y + maxPos.y) / 2 + groupFontHeight + userY // #197
         };
 
         if (!isNaN(attrs.x) && !isNaN(attrs.y)) {

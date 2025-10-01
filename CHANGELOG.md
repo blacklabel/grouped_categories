@@ -29,6 +29,7 @@ All notable changes to this project will be documented in this file.
 - #179
 - #181
 - #185
+- #197
 - #220
 - #227
 - #228
