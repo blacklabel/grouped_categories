@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - #111
+- #177
 - #179
 - #181
 - #185

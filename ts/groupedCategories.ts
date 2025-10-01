@@ -159,51 +159,63 @@ const fontMetrics = (fontSize: string | number, chart?: Chart, elem?: SVGElement
 // Adjusts the tick label's CSS to handle overflow, hiding or truncating the label
 // if it does not fit within its allocated slot width. This ensures that labels
 // do not overlap or extend beyond their bounds in grouped category axes.
-// #220
 const adjustTickLabelOverflow = (axis: GroupedAxis, groupedTick: GroupedTick, leaves: number, depth: number): void => {
-    const horiz = axis.horiz;
-    const categoriesLength = axis.categories?.length || 1;
-    let groupSlotWidth = (axis.width / categoriesLength) * leaves;
+    if (groupedTick.label) {
+        const horiz = axis.horiz;
+        const categoriesLength = axis.categories?.length || 1;
+        const labelHeight = fontMetrics(groupedTick.label?.styles.fontSize || 0, axis.chart).h;
+        const groupSlotHeight = horiz ?
+            Math.abs(axis.groupSize(depth, groupedTick.label.getBBox().height)) :
+            (axis.height / categoriesLength) * leaves;
+        const groupSlotWidth = horiz ?
+            (axis.width / categoriesLength) * leaves :
+            Math.abs(axis.groupSize(depth, groupedTick.label.getBBox().width));
 
-    if (groupedTick.label && !horiz) {
-        const width = axis.groupSize(depth, groupedTick.label.getBBox().width);
-        groupSlotWidth = width < 0 ? width * -1 : width;
-    }
-
-    if (axis.options.labels.step === 1 && groupedTick.label) {
-        if (groupSlotWidth < 15) {
-            groupedTick.label.css({
-                display: 'none',
-                width: undefined,
-                textOverflow: undefined
-            });
-        } else if (
-            groupedTick.rotation !== -90 &&
-            groupedTick.rotation !== 90 &&
-            groupedTick.label &&
-            (
-                groupedTick.label.getBBox().width > groupSlotWidth ||
+        if (axis.options.labels.step === 1) {
+            // Handle width case, #220
+            if (groupSlotWidth < 15) {
+                groupedTick.label.css({
+                    display: 'none',
+                    width: undefined,
+                    textOverflow: undefined
+                });
+            } else if (
+                groupedTick.rotation !== -90 &&
+                groupedTick.rotation !== 90 &&
+                groupedTick.label &&
                 (
-                    groupedTick.label.getBBox().width === 0 &&
-                    groupedTick.label.styles.width &&
-                    groupSlotWidth === +groupedTick.label.styles.width
+                    groupedTick.label.getBBox().width > groupSlotWidth ||
+                    (
+                        groupedTick.label.getBBox().width === 0 &&
+                        groupedTick.label.styles.width &&
+                        groupSlotWidth === +groupedTick.label.styles.width
+                    )
                 )
-            )
-        ) {
-            groupedTick.label.css({
-                display: 'block',
-                width: groupSlotWidth.toString(),
-                textOverflow: 'ellipsis'
-            });
-        } else if (
-            groupedTick.label.styles.textOverflow !== 'ellipsis' ||
-            (groupedTick.label.styles.width && groupSlotWidth > +groupedTick.label.styles.width)
-        ) {
-            groupedTick.label.css({
-                display: 'block',
-                width: undefined,
-                textOverflow: undefined
-            });
+            ) {
+                groupedTick.label.css({
+                    display: 'block',
+                    width: groupSlotWidth.toString(),
+                    textOverflow: 'ellipsis'
+                });
+            } else if (
+                groupedTick.label.styles.textOverflow !== 'ellipsis' ||
+                (groupedTick.label.styles.width && groupSlotWidth > +groupedTick.label.styles.width)
+            ) {
+                groupedTick.label.css({
+                    display: 'block',
+                    width: undefined,
+                    textOverflow: undefined
+                });
+            }
+
+            // Handle height case, #177
+            if (labelHeight > groupSlotHeight) {
+                groupedTick.label.css({
+                    display: 'none',
+                    width: undefined,
+                    textOverflow: undefined
+                });
+            }
         }
     }
 };

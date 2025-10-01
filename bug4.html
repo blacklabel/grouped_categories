@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+	
+<title>Grouped Categories - Highcharts module</title>
+
+<script src="https://code.highcharts.com/highcharts.js"></script> 
+<!-- <script src="./grouped-categories-old.js"></script> -->
+<script src="./dist/grouped-categories.js"></script>
+
+</head>
+<body>
+<div id="main-content" style="padding: 20px;">
+
+<div class="chart-container" id="chart" style="height: 300px;">
+
+</div>
+
+
+<script>
+
+window.chart = new Highcharts.Chart({
+  chart: {
+    inverted: false,
+    renderTo: "chart",
+    type: "column"
+  },
+  series: [
+    {
+      data: [4, 14, 18, 5, 6, 5, 14, 15, 18, 4, 14, 18, 5, 6, 5, 14, 15, 18]
+    }
+  ],
+  xAxis: {
+    categories: [
+      { name: "Fruit", categories: ["Apple", "Banana", "Orange"] },
+      { name: "Vegetable", categories: ["Carrot", "Potato", "Tomato"] },
+      { name: "Fish", categories: ["Cod", "Salmon", "Tuna"] },
+      { name: "Fruit2", categories: ["Apple2", "Banana2", "Orange2"] },
+      { name: "Vegetable2", categories: ["Carrot2", "Potato2", "Tomato2"] },
+      { name: "Fish2", categories: ["Cod2", "Salmon2", "Tuna2"] }
+    ]
+  }
+});
+</script>
+
+</body>
+</html>
