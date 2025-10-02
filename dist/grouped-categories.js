@@ -285,7 +285,7 @@ axisProto.render = function () {
         }
         if ((axis.min && tick.startAt + tick.leaves - 1 < axis.min) || (axis.max && tick.startAt > axis.max)) {
             tick.label?.hide();
-            tick.destroyed = 0;
+            tick.destroyed = 0; // TODO do we need this?
         }
         else {
             tick.label?.attr({ visibility: visible ? 'visible' : 'hidden' });
@@ -542,9 +542,14 @@ tickProto.render = function (index, old, opacity) {
 };
 tickProto.destroy = function () {
     const tick = this;
+    const useHTML = tick.axis.options.labels.useHTML;
     let group = tick.parent;
     while (group) {
-        group.destroyed = group.destroyed ? (group.destroyed + 1) : 1;
+        group.destroyed = group.destroyed ? (group.destroyed + 1) : 1; // TODO do we need this?
+        // Destroy label if it's HTML, #163
+        if (useHTML && group.label?.element) {
+            group.label?.destroy();
+        }
         group = group.parent;
     }
     protoTickDestroy.call(tick);

@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+	
+<title>Grouped Categories - Highcharts module</title>
+
+<script src="https://code.highcharts.com/highcharts.js"></script> 
+<!-- <script src="./grouped-categories-old.js"></script> -->
+<script src="./dist/grouped-categories.js"></script>
+
+</head>
+<body>
+<div id="main-content" style="padding: 20px;">
+
+<div class="chart-container" id="chart" style="height: 500px;">
+
+</div>
+
+
+<script>
+
+window.chart = new Highcharts.Chart({
+  chart: {
+    renderTo: "chart",
+  },
+  series: [{
+    data: [4, 14, 18, 5, 6, 5, 14, 15, 18]
+  }],
+  xAxis: {
+    labels: {
+      enabled: true,
+      style: {
+        color: 'green',
+				fontSize: '16px'
+      },
+      useHTML: true,
+    },
+    categories: [{
+      name: "B",
+      categories: [{
+          name: 'CCC',
+          categories: ["GG", "HH"]
+        },
+        {
+          categories: ["II", "JJ"],
+          name: "DDD"
+        }
+      ]
+    }, {
+      name: "A",
+      categories: [{
+          name: 'AAA',
+          categories: ["AA", "BB", "CC", "DD", "EE", "FF"]
+        },
+        {
+          name: "BBB",
+          categories: ["WW", "ZZ", "UU"]
+        }
+      ]
+    }]
+  }
+});
+
+setTimeout(function() {
+  Highcharts.charts[0].update({
+    xAxis: {
+      labels: {
+        style: {
+					fontSize: Math.random() * 10 + 10 + 'px',
+          color: Math.random() > 0.5 ? 'red' : 'blue',
+        },
+      }
+    },
+  });
+}, 5000);
+</script>
+
+</body>
+</html>
