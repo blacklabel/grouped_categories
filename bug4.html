@@ -15,7 +15,7 @@
 <body>
 <div id="main-content" style="padding: 20px;">
 
-<div class="chart-container" id="chart" style="height: 300px;">
+<div class="chart-container" id="chart" style="height: 300px; border: 1px solid red;">
 
 </div>
 
@@ -24,23 +24,25 @@
 
 window.chart = new Highcharts.Chart({
   chart: {
-    inverted: false,
+    inverted: true,
     renderTo: "chart",
     type: "column"
   },
   series: [
     {
-      data: [4, 14, 18, 5, 6, 5, 14, 15, 18, 4, 14, 18, 5, 6, 5, 14, 15, 18]
+      data: [4, 14, 18, 5, 6, 5, 14, 15, 18]
+      // data: [4, 14, 18, 5, 6, 5, 14, 15, 18, 4, 14, 18, 5, 6, 5, 14, 15, 18]
     }
   ],
   xAxis: {
+    reversed: false,
     categories: [
       { name: "Fruit", categories: ["Apple", "Banana", "Orange"] },
       { name: "Vegetable", categories: ["Carrot", "Potato", "Tomato"] },
       { name: "Fish", categories: ["Cod", "Salmon", "Tuna"] },
-      { name: "Fruit2", categories: ["Apple2", "Banana2", "Orange2"] },
-      { name: "Vegetable2", categories: ["Carrot2", "Potato2", "Tomato2"] },
-      { name: "Fish2", categories: ["Cod2", "Salmon2", "Tuna2"] }
+      // { name: "Fruit2", categories: ["Apple2", "Banana2", "Orange2"] },
+      // { name: "Vegetable2", categories: ["Carrot2", "Potato2", "Tomato2"] },
+      // { name: "Fish2", categories: ["Cod2", "Salmon2", "Tuna2"] }
     ]
   }
 });

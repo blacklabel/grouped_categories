@@ -7,7 +7,8 @@
 	
 <title>Grouped Categories - Highcharts module</title>
 
-<script src="https://code.highcharts.com/highcharts.js"></script> 
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="./dist/grouped-categories.js"></script>
 
 </head>
@@ -31,6 +32,8 @@ window.chart = new Highcharts.Chart({
     series: [{
         // data: [4, 14, 18, 5, 6, 5, 14, 15, 18]
         data: [4, 14, 18, 5, 6, 5, 14, 15, 18, 10, 11, 12]
+    }, {
+        data: [5, 12, 18, 5, 7, 5, 11, 19, 15, 11, 14, 10]
     }],
     xAxis: {
         labels: {

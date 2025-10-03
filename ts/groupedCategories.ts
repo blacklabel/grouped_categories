@@ -608,16 +608,21 @@ tickProto.render = function (index: number, old?: boolean, opacity?: number): vo
     let attrs: { x: number; y: number };
 
     if (isFirst) {
-        gridAttrs = horiz ?
-            [axis.left, xy.y, axis.left, xy.y + axis.groupSize(true)] :
-            axis.isXAxis ?
-                [xy.x, axis.top, xy.x + axis.groupSize(true), axis.top] :
+        // Grid part for first tick, handles reversed axis, #144
+        if (horiz) {
+            const gridX = axis.reversed ? axis.pos + axis.len : axis.left;
+            gridAttrs = [gridX, xy.y, gridX, xy.y + axis.groupSize(true)];
+        } else {
+            const gridY = axis.reversed ? axis.top : axis.pos + axis.len;
+            gridAttrs = axis.isXAxis ?
+                [xy.x, gridY, xy.x + axis.groupSize(true), gridY] :
                 [xy.x, axis.top + axis.len, xy.x + axis.groupSize(true), axis.top + axis.len];
+        }
 
         addGridPart(grid, gridAttrs, tickWidth);
     }
 
-    if (horiz && axis.left < xy.x) {
+    if (horiz && axis.left <= xy.x) {
         addGridPart(grid, [xy.x - reverseCrisp, xy.y, xy.x - reverseCrisp, xy.y + size], tickWidth);
     } else if (!horiz && axis.top <= xy.y) {
         addGridPart(grid, [xy.x, xy.y + reverseCrisp, xy.x + size, xy.y + reverseCrisp], tickWidth);
@@ -669,7 +674,7 @@ tickProto.render = function (index: number, old?: boolean, opacity?: number): vo
             group.label?.attr(attrs);
 
             if (grid) {
-                if (horiz && axis.left < maxPos.x) {
+                if (horiz && axis.left <= maxPos.x) {
                     addGridPart(
                         grid,
                         [maxPos.x - reverseCrisp, size, maxPos.x - reverseCrisp, size + lvlSize],
