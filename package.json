@@ -3,6 +3,7 @@
   "version": "1.3.3",
   "description": "Highcharts plugin to add grouped categories to charts.",
   "main": "grouped-categories.js",
+  "types": "grouped-categories.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/blacklabel/grouped_categories.git"
@@ -20,7 +21,8 @@
   },
   "homepage": "https://github.com/blacklabel/grouped_categories#readme",
   "files": [
-    "grouped-categories.js"
+    "grouped-categories.js",
+    "grouped-categories.d.ts"
   ],
   "devDependencies": {
     "gulp": "^4.0.2",
