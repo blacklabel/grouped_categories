@@ -411,7 +411,7 @@
 			formatter;
 
 		// Initialize topLabelSize on the axis
-        axis.topLabelSize = 0;
+		axis.topLabelSize = 0;
 
 		protoTickAddLabel.call(tick);
 
@@ -643,9 +643,9 @@
 			// #72, getBBox might need recalculating when chart is tall
 			var size = protoTickGetLabelSize.call(this) + 10;
 			if (this.axis.topLabelSize < size) {
-                this.axis.topLabelSize = this.axis.labelsSizes[0];
-                this.axis.labelsSizes[0] = size;
-            }
+				this.axis.topLabelSize = this.axis.labelsSizes[0];
+				this.axis.labelsSizes[0] = size;
+			}
 			return sum(this.axis.labelsSizes);
 		}
 		return protoTickGetLabelSize.call(this);
