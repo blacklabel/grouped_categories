@@ -1,3 +1,11 @@
+/**
+ * Grouped Categories v1.3.4 (2026-03-10)
+ *
+ * (c) 2012-2026 Black Label
+ *
+ * License: Creative Commons Attribution (CC)
+ */
+
 /* global Highcharts module */
 (function (factory) {
 	if (typeof module === 'object' && module.exports) {
@@ -7,13 +15,6 @@
 	}
 }(function (HC) {
 	'use strict';
-	/**
-	 * Grouped Categories v1.3.3 (2025-09-02)
-	 *
-	 * (c) 2012-2025 Black Label
-	 *
-	 * License: Creative Commons Attribution (CC)
-	 */
 
 	/* jshint expr:true, boss:true */
 	var UNDEFINED = void 0,
