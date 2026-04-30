@@ -250,6 +250,44 @@ xAxis: {
 }
 </pre></code>
 
+
+<br/><br/>
+<h3>Large dataset example:</h3>
+<p>150 leaves grouped into 15 second-level parents (10 leaves each) and 5 root-level parents (3 mid-level groups each).</p>
+
+<div class="chart-container" id="chart-large"></div>
+
+<script>
+(function () {
+    const ROOTS = 5, MID_PER_ROOT = 3, LEAVES_PER_MID = 10;
+    let categories = [], data = [], leafIdx = 0;
+    for (let r = 0; r < ROOTS; r++) {
+        let mids = [];
+        for (let m = 0; m < MID_PER_ROOT; m++) {
+            let leaves = [];
+            for (let l = 0; l < LEAVES_PER_MID; l++) {
+                leaves.push('Leaf-node' + leafIdx);
+                data.push(Math.round(Math.random() * 20));
+                leafIdx++;
+            }
+            mids.push({ name: 'Root' + r + '-Mid' + m, categories: leaves });
+        }
+        categories.push({ name: 'Root' + r, categories: mids });
+    }
+    new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart-large',
+            type: 'column'
+        },
+        title: { text: '150 leaves / 15 mid / 5 root' },
+        series: [{ data: data, name: 'Series 1' }],
+        xAxis: {
+            categories: categories
+        }
+    });
+})();
+</script>
+
 <h3>Code</h3>
 
 <p>The latest code is available on github: <a href="https://github.com/blacklabel/grouped_categories/">https://github.com/blacklabel/grouped_categories/</a></p>
