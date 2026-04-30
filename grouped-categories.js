@@ -107,6 +107,21 @@
 		options.depth = mathMax(options.depth, depth);
 	}
 
+	// Precompute startAt (leaf offset) on each category node
+	function assignStartAt(cats, offset) {
+		var i, cat, counter = offset || 0;
+		for (i = 0; i < cats.length; i++) {
+			cat = cats[i];
+			if (cat && cat.categories) {
+				cat._startAt = counter;
+				counter = assignStartAt(cat.categories, counter);
+			} else {
+				counter++;
+			}
+		}
+		return counter;
+	}
+
 	// Pushes part of grid to path
 	function addGridPart(path, d, width) {
 		// Based on crispLine from HC (#65)
@@ -177,6 +192,129 @@
 		};
 	}
 
+	// Adjusts parent label CSS for overflow (hide / ellipsis / restore).
+	function adjustTickLabelOverflow(axis, groupedTick, leaves, depth) {
+		if (!groupedTick.label) {
+			return;
+		}
+		var horiz = axis.horiz,
+			rotation = groupedTick.rotation ||
+				(groupedTick.labelOffsets && groupedTick.labelOffsets.rotation) || 0,
+			isVerticalRotation = rotation === 90 || rotation === -90,
+			groupSlotWidth,
+			visibleRange,
+			width,
+			SLOT_PADDING = 6,
+			usableSlotWidth,
+			rad,
+			bBox,
+			effectiveWidth,
+			styles = groupedTick.label.styles || {};
+
+		// Calculate available slot width for this group label
+		if (horiz) {
+			visibleRange = ((axis.max || 0) - (axis.min || 0) + 1) || 1;
+			groupSlotWidth = (axis.width / visibleRange) * leaves;
+		} else {
+			width = axis.groupSize(depth, groupedTick.label.getBBox().width);
+			groupSlotWidth = Math.abs(width);
+		}
+
+		// For vertically rotated labels, width constraint does not apply — skip
+		if (isVerticalRotation) {
+			groupedTick.label.css({
+				display: 'block',
+				width: undefined,
+				textOverflow: undefined,
+				whiteSpace: undefined
+			});
+			return;
+		}
+
+		usableSlotWidth = mathMax(0, groupSlotWidth - SLOT_PADDING);
+
+		// Force nowrap before measuring — HC 12 soft-wraps, skewing bBox
+		if (styles.whiteSpace !== 'nowrap') {
+			groupedTick.label.css({
+				whiteSpace: 'nowrap',
+				width: undefined,
+				textOverflow: undefined
+			});
+			styles = groupedTick.label.styles || {};
+		}
+
+		// For rotated (non-90°) labels, calculate effective horizontal width
+		if (rotation !== 0) {
+			rad = Math.abs(rotation) * (Math.PI / 180);
+			bBox = groupedTick.label.getBBox();
+			effectiveWidth = bBox.width * Math.cos(rad) + bBox.height * Math.sin(rad);
+			if (effectiveWidth <= usableSlotWidth) {
+				groupedTick.label.css({
+					display: 'block',
+					width: undefined,
+					textOverflow: undefined,
+					whiteSpace: 'nowrap'
+				});
+				return;
+			}
+		}
+
+		// Hide label if slot is too narrow to render anything meaningful
+		if (usableSlotWidth < 12) {
+			groupedTick.label.css({
+				display: 'none',
+				width: undefined,
+				textOverflow: undefined,
+				whiteSpace: undefined
+			});
+		}
+		// Was hidden, now has room — restore and re-evaluate
+		else if (styles.display === 'none') {
+			groupedTick.label.css({
+				display: 'block',
+				width: undefined,
+				textOverflow: undefined,
+				whiteSpace: 'nowrap'
+			});
+			if (groupedTick.label.getBBox().width > usableSlotWidth) {
+				groupedTick.label.css({
+					display: 'block',
+					width: usableSlotWidth + 'px',
+					textOverflow: 'ellipsis',
+					whiteSpace: 'nowrap'
+				});
+			}
+		}
+		// Already truncated at this width — no-op
+		else if (styles.textOverflow === 'ellipsis' &&
+			styles.width &&
+			Math.abs(usableSlotWidth - +String(styles.width).replace('px', '')) < 0.5) {
+			// no-op
+		}
+		// Truncate with ellipsis if label overflows its slot
+		else if (groupedTick.label.getBBox().width > usableSlotWidth ||
+			(groupedTick.label.getBBox().width === 0 &&
+				styles.width &&
+				usableSlotWidth === +String(styles.width).replace('px', ''))) {
+			groupedTick.label.css({
+				display: 'block',
+				width: usableSlotWidth + 'px',
+				textOverflow: 'ellipsis',
+				whiteSpace: 'nowrap'
+			});
+		}
+		// Clear previous overflow CSS when label now fits
+		else if (styles.textOverflow === 'ellipsis' ||
+			(styles.width && usableSlotWidth > +String(styles.width).replace('px', ''))) {
+			groupedTick.label.css({
+				display: 'block',
+				width: undefined,
+				textOverflow: undefined,
+				whiteSpace: 'nowrap'
+			});
+		}
+	}
+
 	//
 	// Axis prototype
 	//
@@ -201,6 +339,7 @@
 
 		// build categories tree
 		buildTree(categories, reverseTree, stats);
+		assignStartAt(categories, 0);
 
 		// set axis properties
 		this.categoriesTree = categories;
@@ -210,6 +349,9 @@
 		this.labelsSizes = [];
 		this.labelsGridPath = [];
 		this.tickLength = options.tickLength || this.tickLength || null;
+		// Cached parent-group data for grid separators (built on first render)
+		this._gcParentGroups = null;
+		this._gcMaxDepthFromRoot = 0;
 		// #66: tickWidth for x axis defaults to 1, for y to 0
 		this.tickWidth = pick(options.tickWidth, this.isXAxis ? 1 : 0);
 		this.directionFactor = [-1, 1, 1, -1][this.side];
@@ -221,6 +363,16 @@
 				mergedCSS = hasOptions && userAttr[i - 1].style ? merge(css, userAttr[i - 1].style) : css;
 			this.groupFontHeights[i] = Math.round(fontMetrics(mergedCSS ? mergedCSS.fontSize : 0).b * 0.3);
 		}
+
+		// Reduce default distance to 40% for grouped axes to center leaf labels vertically.
+		// If the user explicitly set labels.distance, respect it as-is.
+		if (this.isGrouped && !this._gcDistanceAdjusted) {
+			var userLabels = options.labels;
+			if (!userLabels || userLabels.distance == null) {
+				this.options.labels.distance = this.options.labels.distance * 0.4;
+			}
+			this._gcDistanceAdjusted = true;
+		}
 	};
 
 
@@ -228,6 +380,8 @@
 		// clear grid path
 		if (this.isGrouped) {
 			this.labelsGridPath = [];
+			// Keep 0.5 offset — HC resets to 0 on auto-step, misaligning labels
+			this.tickmarkOffset = 0.5;
 		}
 
 		// cache original tick length
@@ -299,6 +453,127 @@
 			i++;
 		}
 
+		// Leaf-level grid separators for all positions (independent of auto-step)
+		var leafSize = axis.groupSize(0),
+			cats = axis.categories || [],
+			catMin = axis.min != null ? axis.min : 0,
+			catMax = axis.max != null ? axis.max : cats.length - 1,
+			tickmarkOffset = 0.5,
+			refTick = null,
+			tk;
+		for (tk in axis.ticks) {
+			if (axis.ticks.hasOwnProperty(tk)) {
+				refTick = axis.ticks[tk];
+				break;
+			}
+		}
+		if (refTick) {
+			var pos, xy, rc, totalSize, firstGridAttrs;
+			for (pos = Math.ceil(catMin); pos <= catMax; pos++) {
+				xy = refTick.getPosition(horiz, pos, tickmarkOffset);
+				rc = ((horiz && xy.x === axis.pos + axis.len) ||
+					(!horiz && xy.y === axis.pos)) ? -1 : 0;
+				if (pos === Math.ceil(catMin)) {
+					totalSize = axis.groupSize(true);
+					firstGridAttrs = horiz ?
+						[axis.left, xy.y, axis.left, xy.y + totalSize] :
+						axis.isXAxis ?
+							[xy.x, top, xy.x + totalSize, top] :
+							[xy.x, top + axis.len, xy.x + totalSize, top + axis.len];
+					addGridPart(d, firstGridAttrs, tickWidth);
+				}
+				if (horiz && axis.left < xy.x) {
+					addGridPart(d, [xy.x - rc, xy.y, xy.x - rc, xy.y + leafSize], tickWidth);
+				} else if (!horiz && axis.top <= xy.y) {
+					addGridPart(d, [xy.x, xy.y + rc, xy.x + leafSize, xy.y + rc], tickWidth);
+				}
+			}
+
+			// Parent-level grid separators — computed from categoriesTree
+			// (tick.startAt is unreliable under auto-step)
+			var refXY = refTick.getPosition(horiz, Math.ceil(catMin), tickmarkOffset),
+				baseStart = horiz ? refXY.y : refXY.x,
+				parentGroups,
+				bucketsByDepth,
+				maxDepthFromRoot,
+				lvlOffset,
+				lvl,
+				lvlSize,
+				bucket,
+				pgi,
+				pg,
+				lastLeaf,
+				clampedLast,
+				xyR,
+				rc2;
+
+			// Build or reuse cached parent groups
+			if (!axis._gcParentGroups) {
+				parentGroups = [];
+				maxDepthFromRoot = 0;
+				bucketsByDepth = [];
+				(function collectGroups(nodes, depthFromRoot, startCounter) {
+					var counter = startCounter,
+						ni,
+						node,
+						groupStart,
+						entry;
+					for (ni = 0; ni < nodes.length; ni++) {
+						node = nodes[ni];
+						if (node && node.categories && node.categories.length) {
+							groupStart = counter;
+							counter = collectGroups(node.categories, depthFromRoot + 1, counter);
+							entry = {
+								startAt: groupStart,
+								leaves: counter - groupStart,
+								depthFromRoot: depthFromRoot
+							};
+							parentGroups.push(entry);
+							if (depthFromRoot > maxDepthFromRoot) {
+								maxDepthFromRoot = depthFromRoot;
+							}
+							(bucketsByDepth[depthFromRoot] = bucketsByDepth[depthFromRoot] || []).push(entry);
+						} else {
+							counter++;
+						}
+					}
+					return counter;
+				})(axis.categoriesTree || [], 1, 0);
+				axis._gcParentGroups = parentGroups;
+				axis._gcParentBuckets = bucketsByDepth;
+				axis._gcMaxDepthFromRoot = maxDepthFromRoot;
+			} else {
+				bucketsByDepth = axis._gcParentBuckets;
+				maxDepthFromRoot = axis._gcMaxDepthFromRoot;
+			}
+
+			lvlOffset = baseStart + leafSize;
+			for (lvl = 1; lvl <= depth; lvl++) {
+				lvlSize = axis.groupSize(lvl);
+				bucket = bucketsByDepth[maxDepthFromRoot - lvl + 1];
+				if (bucket) {
+					for (pgi = 0; pgi < bucket.length; pgi++) {
+						pg = bucket[pgi];
+						lastLeaf = pg.startAt + pg.leaves - 1;
+						if ((axis.max != null && pg.startAt > axis.max) ||
+							(axis.min != null && lastLeaf < axis.min)) {
+							continue;
+						}
+						clampedLast = axis.max != null ? mathMin(lastLeaf, axis.max) : lastLeaf;
+						xyR = refTick.getPosition(horiz, clampedLast, tickmarkOffset);
+						rc2 = ((horiz && xyR.x === axis.pos + axis.len) ||
+							(!horiz && xyR.y === axis.pos)) ? -1 : 0;
+						if (horiz && axis.left < xyR.x) {
+							addGridPart(d, [xyR.x - rc2, lvlOffset, xyR.x - rc2, lvlOffset + lvlSize], tickWidth);
+						} else if (!horiz && axis.top <= xyR.y) {
+							addGridPart(d, [lvlOffset, xyR.y + rc2, lvlOffset + lvlSize, xyR.y + rc2], tickWidth);
+						}
+					}
+				}
+				lvlOffset += lvlSize;
+			}
+		}
+
 		// draw grid path
 		grid.attr({
 			d: d,
@@ -326,6 +601,22 @@
 			}
 			return true;
 		});
+
+		// Second pass: re-apply parent label overflow after HC's style passes
+		walk(axis.categoriesTree, 'categories', function (group) {
+			var groupTick = group.tick,
+				gd = 0,
+				p = group;
+			if (!groupTick || !groupTick.label) {
+				return true;
+			}
+			while (p) {
+				gd++;
+				p = p.parent;
+			}
+			adjustTickLabelOverflow(axis, groupTick, group.leaves || 1, gd);
+			return true;
+		});
 		return true;
 	};
 
@@ -333,6 +624,9 @@
 		if (this.categories) {
 			this.cleanGroups();
 		}
+		this._gcParentGroups = null;
+		this._gcParentBuckets = null;
+		this._gcMaxDepthFromRoot = 0;
 		this.setupGroups({
 			categories: newCategories
 		});
@@ -494,8 +788,8 @@
 					label.css(mergedCSS);
 				}
 
-				// tick properties
-				tick.startAt = this.pos;
+				// tick properties — use precomputed _startAt from tree
+				tick.startAt = category._startAt != null ? category._startAt : this.pos;
 				tick.childCount = category.categories.length;
 				tick.leaves = category.leaves;
 				tick.visible = this.childCount;
@@ -560,19 +854,19 @@
 			attrs,
 			bBox;
 
-		// render grid for "normal" categories (first-level), render left grid line only for the first category
-		if (isFirst) {
-			gridAttrs = horiz ?
-				[axis.left, xy.y, axis.left, xy.y + axis.groupSize(true)] : axis.isXAxis ?
-					[xy.x, axis.top, xy.x + axis.groupSize(true), axis.top] : [xy.x, axis.top + axis.len, xy.x + axis.groupSize(true), axis.top + axis.len];
+		// Leaf grid separators are drawn centrally in axisProto.render
 
-			addGridPart(grid, gridAttrs, tickWidth);
-		}
-
-		if (horiz && axis.left < xy.x) {
-			addGridPart(grid, [xy.x - reverseCrisp, xy.y, xy.x - reverseCrisp, xy.y + size], tickWidth);
-		} else if (!horiz && axis.top <= xy.y) {
-			addGridPart(grid, [xy.x, xy.y + reverseCrisp, xy.x + size, xy.y + reverseCrisp], tickWidth);
+		// Reset stale overflow CSS on leaf labels — HC handles their visibility
+		if (tick.label && tick.label.styles) {
+			if (tick.label.styles.display === 'none' ||
+				tick.label.styles.textOverflow === 'ellipsis' ||
+				tick.label.styles.width) {
+				tick.label.css({
+					display: '',
+					width: undefined,
+					textOverflow: undefined
+				});
+			}
 		}
 
 		size = start + size;
@@ -602,6 +896,8 @@
 			// check if on the edge to adjust
 			reverseCrisp = ((horiz && maxPos.x === axis.pos + axis.len) || (!horiz && maxPos.y === axis.pos)) ? -1 : 0;
 
+			adjustTickLabelOverflow(axis, group, group.leaves || 1, depth);
+
 			attrs = horiz ? {
 				x: (minPos.x + maxPos.x) / 2 + userX,
 				y: size + axis.groupFontHeights[depth] + lvlSize / 2 + userY / 2
@@ -612,14 +908,7 @@
 
 			if (!isNaN(attrs.x) && !isNaN(attrs.y)) {
 				group.label.attr(attrs);
-
-				if (grid) {
-					if (horiz && axis.left < maxPos.x) {
-						addGridPart(grid, [maxPos.x - reverseCrisp, size, maxPos.x - reverseCrisp, size + lvlSize], tickWidth);
-					} else if (!horiz && axis.top <= maxPos.y) {
-						addGridPart(grid, [size, maxPos.y + reverseCrisp, size + lvlSize, maxPos.y + reverseCrisp], tickWidth);
-					}
-				}
+				// Parent grid separators drawn centrally in axisProto.render
 			}
 
 			size += lvlSize;

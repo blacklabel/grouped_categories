@@ -206,49 +206,45 @@ window.chart = new Highcharts.Chart({
 });
 </script>
 
+<br/><br/>
+<h3>Large dataset example:</h3>
+<p>150 leaves grouped into 15 second-level parents (10 leaves each) and 5 root-level parents (3 mid-level groups each).</p>
+
+<div class="chart-container" id="chart-large"></div>
+
+<script>
+(function () {
+    const ROOTS = 5, MID_PER_ROOT = 3, LEAVES_PER_MID = 10;
+    let categories = [], data = [], leafIdx = 0;
+    for (let r = 0; r < ROOTS; r++) {
+        let mids = [];
+        for (let m = 0; m < MID_PER_ROOT; m++) {
+            let leaves = [];
+            for (let l = 0; l < LEAVES_PER_MID; l++) {
+                leaves.push('Leaf-node' + leafIdx);
+                data.push(Math.round(Math.random() * 20));
+                leafIdx++;
+            }
+            mids.push({ name: 'Root' + r + '-Mid' + m, categories: leaves });
+        }
+        categories.push({ name: 'Root' + r, categories: mids });
+    }
+    new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart-large',
+            type: 'column'
+        },
+        title: { text: '150 leaves / 15 mid / 5 root' },
+        series: [{ data: data, name: 'Series 1' }],
+        xAxis: {
+            categories: categories
+        }
+    });
+})();
+</script>
 
 <p>For each level you can define subset of styling options. 0-level categories are based on the default Highcharts options.</p>
 
-<pre><code>
-xAxis: {  	
-    labels: {
-        groupedOptions: [{
-            style: {
-                color: 'red' // set red font for labels in 1st-Level  
-            }
-        }, {
-            rotation: -45, // rotate labels for a 2nd-level
-            align: 'right'
-        }],
-        rotation: 0 // 0-level options aren't changed, use them as always
-    },
-    categories: [{
-        name: "America",
-        categories: [{
-            name: "USA",
-            categories: ["New York", "San Francisco"]
-        }, {
-            name: "Canada",
-            categories: ["Toronto", "Vancouver"]
-        }, {
-            name: "Mexico",
-            categories: ["Acapulco", "Leon"]
-        }]
-    }, {
-        name: "Europe",
-        categories: [{
-            name: "United Kingdom",
-            categories: ["London", "Liverpool"]
-        }, {
-            name: "France",
-            categories: ["Paris", "Marseille"]
-        }, {
-            name: "Germany",
-            categories: ["Berlin", "Munich"]
-        }]
-    }]
-}
-</pre></code>
 
 <h3>Code</h3>
 
