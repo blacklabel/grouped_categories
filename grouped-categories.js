@@ -221,6 +221,15 @@
 				mergedCSS = hasOptions && userAttr[i - 1].style ? merge(css, userAttr[i - 1].style) : css;
 			this.groupFontHeights[i] = Math.round(fontMetrics(mergedCSS ? mergedCSS.fontSize : 0).b * 0.3);
 		}
+
+		// Reduce default distance to 40% for grouped axes to center leaf labels vertically.
+        if (this.isGrouped && !this._gcDistanceAdjusted) {
+            var userLabels = options.labels;
+            if (!userLabels || userLabels.distance == null) {
+                this.options.labels.distance = this.options.labels.distance * 0.4;
+            }
+            this._gcDistanceAdjusted = true;
+        }
 	};
 
 
