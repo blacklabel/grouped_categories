@@ -221,15 +221,6 @@
 				mergedCSS = hasOptions && userAttr[i - 1].style ? merge(css, userAttr[i - 1].style) : css;
 			this.groupFontHeights[i] = Math.round(fontMetrics(mergedCSS ? mergedCSS.fontSize : 0).b * 0.3);
 		}
-
-		// Reduce default distance to 40% for grouped axes to center leaf labels vertically.
-        if (this.isGrouped && !this._gcDistanceAdjusted) {
-            var userLabels = options.labels;
-            if (!userLabels || userLabels.distance == null) {
-                this.options.labels.distance = this.options.labels.distance * 0.4;
-            }
-            this._gcDistanceAdjusted = true;
-        }
 	};
 
 
@@ -651,7 +642,9 @@
 	tickProto.getLabelSize = function () {
 		if (this.axis.isGrouped === true) {
 			// #72, getBBox might need recalculating when chart is tall
-			var size = protoTickGetLabelSize.call(this) + 10;
+			// Include labels.distance in the leaf grid height.
+			var distance = pick(this.axis.options.labels && this.axis.options.labels.distance, 0),
+				size = protoTickGetLabelSize.call(this) + 10 + Math.max(0, distance);
 			if (this.axis.topLabelSize < size) {
 				this.axis.topLabelSize = this.axis.labelsSizes[0];
 				this.axis.labelsSizes[0] = size;
