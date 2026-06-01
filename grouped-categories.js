@@ -642,7 +642,9 @@
 	tickProto.getLabelSize = function () {
 		if (this.axis.isGrouped === true) {
 			// #72, getBBox might need recalculating when chart is tall
-			var size = protoTickGetLabelSize.call(this) + 10;
+			// Include labels.distance in the leaf grid height.
+			var distance = pick(this.axis.options.labels && this.axis.options.labels.distance, 0),
+				size = protoTickGetLabelSize.call(this) + 10 + Math.max(0, distance);
 			if (this.axis.topLabelSize < size) {
 				this.axis.topLabelSize = this.axis.labelsSizes[0];
 				this.axis.labelsSizes[0] = size;
